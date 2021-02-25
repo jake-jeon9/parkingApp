@@ -343,7 +343,7 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                //save
                 }
             });
 
