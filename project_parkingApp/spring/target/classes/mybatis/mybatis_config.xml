@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 클래스에 별명 설정 -->
+	<typeAliases>
+		<!-- 제휴업체 -->
+		<typeAlias type="agency.bean.AgencyDTO" alias="AgencyDTO"/>
+		<!-- 요금설정 -->
+		<typeAlias type="cost.bean.CostDTO" alias="CostDTO"/>
+		<!-- 회원 정보 -->
+		<typeAlias type="member.bean.MemberDTO" alias="memberDTO"/>
+		<!-- 주차정보 -->
+		<typeAlias type="parkinglist.bean.ParkinglistDTO" alias="ParkinglistDTO"/>		
+		<!-- 사진 -->
+		<typeAlias type="photo.bean.PhotoDTO" alias="PhotoDTO"/>
+		<!-- 정기주차 -->
+		<typeAlias type="regular.bean.RegularDTO" alias="RegularDTO"/>
+		
+	</typeAliases>
+	
+	<!-- sql mapper 설정 -->
+	<mappers>
+		<mapper resource="mybatis/agency_mapping.xml"/>
+		<mapper resource="mybatis/cost_mapping.xml"/>
+		<mapper resource="mybatis/member_mapping.xml"/>
+		<mapper resource="mybatis/parkinglist_mapping.xml"/>
+		<mapper resource="mybatis/photo_mapping.xml"/>
+		<mapper resource="mybatis/regular_mapping.xml"/>
+	</mappers>
+</configuration>
