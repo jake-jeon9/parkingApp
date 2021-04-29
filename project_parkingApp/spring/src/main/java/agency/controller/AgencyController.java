@@ -20,7 +20,7 @@ public class AgencyController {
 
 	@Autowired
 	AgencyService agencyService;
-	
+	//커밋테스트
 	@RequestMapping(value = "/agency/agency_insert.do")
 	public ModelAndView agencyInsert(HttpServletRequest request, MultipartFile[] photo) throws Exception {
 		System.out.println("-- 함수 실행 : agency_insert.do --");
