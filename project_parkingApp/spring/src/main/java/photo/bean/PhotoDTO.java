@@ -2,7 +2,7 @@ package photo.bean;
 
 public class PhotoDTO {
 	private int photoId;
-	private int usedId;
+	private int usedNo;
 	private String dir;
 	private String fileName;
 	private String originalName;
@@ -16,11 +16,11 @@ public class PhotoDTO {
 	}
 
 
-	public PhotoDTO(int photoId, int usedId, String dir, String fileName, String originalName, String fileType,
+	public PhotoDTO(int photoId, int usedNo, String dir, String fileName, String originalName, String fileType,
 			int fileSize, String reg_date) {
 		super();
 		this.photoId = photoId;
-		this.usedId = usedId;
+		this.usedNo = usedNo;
 		this.dir = dir;
 		this.fileName = fileName;
 		this.originalName = originalName;
@@ -40,13 +40,13 @@ public class PhotoDTO {
 	}
 
 
-	public int getUsedId() {
-		return usedId;
+	public int getUsedNo() {
+		return usedNo;
 	}
 
 
-	public void setUsedId(int usedId) {
-		this.usedId = usedId;
+	public void setUsedNo(int usedNo) {
+		this.usedNo = usedNo;
 	}
 
 
@@ -108,7 +108,8 @@ public class PhotoDTO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-	
+
+
 	
 	
 }

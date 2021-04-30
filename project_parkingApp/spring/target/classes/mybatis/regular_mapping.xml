@@ -2,37 +2,51 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mybatis.boardMapper">
-	<!-- 보드 -->
-	<!-- 보드 추가 -->
-	<insert id="boardWrite" parameterType="boardDTO" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO board 
-		VALUES     (seq_board_id.nextval, 
-		            #{writer}, 
-		            <if test="foret_id == 0">
-		            null,
-		            </if>
-		            <if test="foret_id != 0">
-		            #{foret_id}, 
-		            </if>
-		            #{type}, 
-		            0, 
-		            #{subject}, 
-		            #{content}, 
-		            sysdate, 
-		            sysdate)
+<mapper namespace="mybatis.regularMapper">
+	<!-- regular -->
+	<!-- regular insert -->
+	<insert id="regularInsert" parameterType="regularDTO">
+		INSERT INTO REGULAR 
+		VALUES     (seq_regular.nextval, 
+		            #{memberNo}, 
+		            #{plateNumOfCar}, 
+		            #{guestName},
+		            #{guestContact},
+		            sysdate,
+		            add_months(sysdate,#{expireOfDate}),
+		            0,
+		            #{paid},
+		            0)
 	</insert>
-	<!-- 보드 수정 -->
-	<update id="boardModify" parameterType="boardDTO" >
-		UPDATE board 
-		SET    subject = #{subject}, 
-		       content = #{content}, 
-		       edit_date = sysdate 
-		WHERE  id = #{id} 
+	<!-- regular modify -->
+	<update id="regularModify" parameterType="regularDTO" >
+		UPDATE REGULAR 
+		SET    plateNumOfCar = #{plateNumOfCar}, 
+		       guestName = #{guestName}, 
+		       guestContact = #{guestContact},
+			   expireOfDate = #{expireOfDate},
+			   countOfextend = #{countOfextend},
+			   paid = #{paid}
+		WHERE  regularNo = #{regularNo} 
 	</update>
-	<!-- 보드 삭제 -->
-		<delete id="boardDelete" parameterType="boardDTO" >
-		DELETE FROM board 
-		WHERE  id = #{id}
+	
+	<!-- update count -->
+	<update id="regularUpdate" parameterType="int" >
+		UPDATE REGULAR 
+		SET 	usedCount = usedCount+1
+		WHERE	regularNo = 2;
+	</update>
+	
+	<!-- delete regular -->
+	<delete id="regularDelete" parameterType=int >
+		DELETE FROM REGULAR 
+		WHERE  regularNo = #{regularNo}
 	</delete>
+	
+	<!-- list regular -->
+	<select id="regularSelect" parameterType="int" resultType="regularDTO">
+		SELECT * FROM REGULAR
+		WHERE regularNo = #{regularNo}
+	</select>
+	
 </mapper>

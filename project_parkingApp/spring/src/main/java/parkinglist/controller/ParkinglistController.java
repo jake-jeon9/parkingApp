@@ -183,7 +183,7 @@ public class ParkinglistController {
 		return result;
 	}
 	
-	public int parkedCarPhotoWrite(int usedId, HttpServletRequest request, MultipartFile photo) throws Exception {
+	public int parkedCarPhotoWrite(int usedNo, HttpServletRequest request, MultipartFile photo) throws Exception {
 		System.out.println("함수 실행 : parkedCarPhotoWrite");
 		int result = 0;
 		String dir = request.getSession().getServletContext().getRealPath("/storage");
@@ -201,7 +201,7 @@ public class ParkinglistController {
         photoDTO.setFileName(filename);
         photoDTO.setFileType(filetype);
         photoDTO.setFileSize(filesize);
-        photoDTO.setUsedId(usedId);
+        photoDTO.setUsedNo(usedNo);
         
         result = photoService.foretPhotoWrite(photoDTO);
         System.out.println("함수 종료 : parkedCarPhotoWrite");

@@ -13,8 +13,8 @@ public class CostDAO {
 	@Autowired
 	SqlSessionTemplate sqlSession;
 	
-	public int costInsert(CostDTO costDTO) {
-		return sqlSession.insert("mybatis.costMapper.costInsert", costDTO);
+	public int costInsert(int memberNo) {
+		return sqlSession.insert("mybatis.costMapper.costInsert", memberNo);
 	}
 	public int costModify(CostDTO costDTO) {
 		return sqlSession.update("mybatis.costMapper.costModify", costDTO);
