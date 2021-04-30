@@ -7,15 +7,15 @@
 	<!-- 클래스에 별명 설정 -->
 	<typeAliases>
 		<!-- 제휴업체 -->
-		<typeAlias type="agency.bean.AgencyDTO" alias="AgencyDTO"/>
+		<typeAlias type="agency.bean.AgencyDTO" alias="agencyDTO"/>
 		<!-- 요금설정 -->
-		<typeAlias type="cost.bean.CostDTO" alias="CostDTO"/>
+		<typeAlias type="cost.bean.CostDTO" alias="costDTO"/>
 		<!-- 회원 정보 -->
 		<typeAlias type="member.bean.MemberDTO" alias="memberDTO"/>
 		<!-- 주차정보 -->
-		<typeAlias type="parkinglist.bean.ParkinglistDTO" alias="ParkinglistDTO"/>		
+		<typeAlias type="parkinglist.bean.ParkinglistDTO" alias="parkinglistDTO"/>		
 		<!-- 사진 -->
-		<typeAlias type="photo.bean.PhotoDTO" alias="PhotoDTO"/>
+		<typeAlias type="photo.bean.PhotoDTO" alias="photoDTO"/>
 		<!-- 정기주차 -->
 		<typeAlias type="regular.bean.RegularDTO" alias="RegularDTO"/>
 		

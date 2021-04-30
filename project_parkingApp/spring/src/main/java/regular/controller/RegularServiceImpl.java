@@ -34,4 +34,9 @@ public class RegularServiceImpl implements RegularService {
 		return regularDAO.regularSelect(memberNo);
 	}
 
+	@Override
+	public int regularUpdate(int regularNo) {
+		return regularDAO.regularUpdate(regularNo);
+	}
+
 }

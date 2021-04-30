@@ -5,34 +5,34 @@
 <mapper namespace="mybatis.boardMapper">
 	<!-- 보드 -->
 	<!-- 보드 추가 -->
-	<insert id="boardWrite" parameterType="boardDTO" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO board 
-		VALUES     (seq_board_id.nextval, 
-		            #{writer}, 
-		            <if test="foret_id == 0">
-		            null,
-		            </if>
-		            <if test="foret_id != 0">
-		            #{foret_id}, 
-		            </if>
-		            #{type}, 
-		            0, 
-		            #{subject}, 
-		            #{content}, 
-		            sysdate, 
-		            sysdate)
+	<insert id="costInsert" parameterType="int" >
+		INSERT INTO cost 
+		VALUES     #{memberNo}
+		           DEFAULT,
+				   DEFAULT,
+				   DEFAULT,
+				   DEFAULT,
+				   DEFAULT,
+				   DEFAULT,
+				   DEFAULT,
+				   SYSDATE)
 	</insert>
 	<!-- 보드 수정 -->
-	<update id="boardModify" parameterType="boardDTO" >
-		UPDATE board 
-		SET    subject = #{subject}, 
-		       content = #{content}, 
-		       edit_date = sysdate 
-		WHERE  id = #{id} 
+	<update id="boardModify" parameterType="costDTO" >
+		UPDATE cost 
+		SET    additionalCost = #{additionalCost}, 
+			   additionalTiem=#{additionalTiem},
+			   baseCost=#{baseCost},
+			   baseTime=#{baseTime},
+			   maxcost=#{maxcost},
+			   maxtime=#{maxtime},
+			   maxArea=#{maxArea},
+		       sysdate 
+		WHERE  memberNo = #{memberNo} 
 	</update>
 	<!-- 보드 삭제 -->
 		<delete id="boardDelete" parameterType="boardDTO" >
-		DELETE FROM board 
-		WHERE  id = #{id}
+		DELETE FROM cost 
+		WHERE  memberNo = #{memberNo}
 	</delete>
 </mapper>

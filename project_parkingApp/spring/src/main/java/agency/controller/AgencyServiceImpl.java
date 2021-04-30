@@ -34,4 +34,9 @@ public class AgencyServiceImpl implements AgencyService{
 		return agencyDAO.agencySelect(memberNo);
 	}
 
+	@Override
+	public int agencyUpdate(int memberNo) {
+		return agencyDAO.agencyUpdate(memberNo);
+	}
+
 }

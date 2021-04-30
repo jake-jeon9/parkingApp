@@ -20,6 +20,10 @@ public class AgencyDAO {
 	public int agencyDelete(AgencyDTO agencyDTO) {
 		return sqlSession.delete("mybatis.agencyMapper.agencyDelete", agencyDTO);
 	}
+	public int agencyUpdate(int memberNo) {
+		return sqlSession.update("mybatis.agencyMapper.agencyUpdate", memberNo);
+	}
+	
 	public List<AgencyDTO> agencySelect(int memberNo) {
 		return sqlSession.selectList("mybatis.agencyMapper.agencySelect", memberNo);
 	}

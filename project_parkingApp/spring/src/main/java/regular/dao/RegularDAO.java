@@ -24,6 +24,9 @@ public class RegularDAO {
 	public int regularDelete(int regularNo) {
 		return sqlSession.delete("mybatis.regularMapper.regularDelete", regularNo);
 	}
+	public int regularUpdate(int regularNo) {
+		return sqlSession.update("mybatis.regularMapper.regularUpdate", regularNo);
+	}
 	public List<RegularDTO> regularSelect(int memberNo) {
 		return sqlSession.selectList("mybatis.regularMapper.regularSelect", memberNo);
 	}
