@@ -3,36 +3,65 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.boardMapper">
-	<!-- 보드 -->
-	<!-- 보드 추가 -->
-	<insert id="costInsert" parameterType="int" >
-		INSERT INTO cost 
-		VALUES     #{memberNo}
-		           DEFAULT,
-				   DEFAULT,
-				   DEFAULT,
-				   DEFAULT,
-				   DEFAULT,
-				   DEFAULT,
-				   DEFAULT,
-				   SYSDATE)
+	<!-- 주차 리스트 -->
+	<!-- 차량 입차 -->
+	<insert id="parkinglistInsert" parameterType="ParkinglistDTO" >
+		INSERT INTO listOfparked 
+		VALUES     (seq_listOfParked.nextval,
+		           #{memberNo},
+				   #{plateNumOfCar},
+				   default,
+				   0,
+				   sysdate,
+				   null,
+				   0,
+				   null
+				   )
 	</insert>
-	<!-- 보드 수정 -->
-	<update id="boardModify" parameterType="costDTO" >
-		UPDATE cost 
-		SET    additionalCost = #{additionalCost}, 
-			   additionalTiem=#{additionalTiem},
-			   baseCost=#{baseCost},
-			   baseTime=#{baseTime},
-			   maxcost=#{maxcost},
-			   maxtime=#{maxtime},
-			   maxArea=#{maxArea},
-		       sysdate 
-		WHERE  memberNo = #{memberNo} 
+	<!-- 차량 출차 -->
+	<update id="parkinglistUpdate" parameterType="ParkinglistDTO" >
+		UPDATE listOfparked 
+		SET    currentOfState = #{currentOfState}, 
+			   timeOfused = to_data(#{timeOfused}),
+			   timeOfOut = sysdate,
+			   paid = #{paid},
+			   coupon = #{coupon}
+		WHERE  usedNo = #{usedNo} and currentOfState = 'in'
 	</update>
-	<!-- 보드 삭제 -->
+	
+	<!-- 정보수정 -->
+	<update id="parkinglistModify" parameterType="ParkinglistDTO" >
+		UPDATE listOfparked 
+		SET    plateNumOfCar = #{plateNumOfCar}, 
+			   currentOfState=#{currentOfState},
+			   timeOfused=#{timeOfused},
+			   timeOfOut=#{timeOfOut},
+			   timeOfParked=#{timeOfParked},
+			   paid=#{paid},
+			   coupon=#{coupon},
+		WHERE  usedNo = #{usedNo} 
+	</update>
+	
+	<!-- 리스트 삭제 -->
 		<delete id="boardDelete" parameterType="boardDTO" >
-		DELETE FROM cost 
-		WHERE  memberNo = #{memberNo}
+		DELETE FROM listOfparked 
+		WHERE  usedNo = #{usedNo}
 	</delete>
+	
+	<!-- 특정 차량 조회 -->
+	
+	<!-- 오늘 차량 리스트 조회 -->
+	
+	<!-- 현재 in 인 차량 조회 -->
+	
+	<!-- 현재까지 out된 차량조회 -->
+	
+	<!-- 특정 기간 조회 -->
+	
+	<!-- coupon 멤버 조회 in -->
+	
+	<!-- coupon 멤버 조회 out -->
+	
+	
+	
 </mapper>

@@ -2,37 +2,42 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mybatis.boardMapper">
-	<!-- 보드 -->
-	<!-- 보드 추가 -->
-	<insert id="boardWrite" parameterType="boardDTO" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-		INSERT INTO board 
-		VALUES     (seq_board_id.nextval, 
-		            #{writer}, 
-		            <if test="foret_id == 0">
-		            null,
-		            </if>
-		            <if test="foret_id != 0">
-		            #{foret_id}, 
-		            </if>
-		            #{type}, 
-		            0, 
-		            #{subject}, 
-		            #{content}, 
-		            sysdate, 
+<mapper namespace="mybatis.photoMapper">
+	<!-- 사진 -->
+	<!-- 사진 추가 -->
+	<insert id="photoWrite" parameterType="photoDTO">
+		INSERT INTO photo 
+		VALUES     (photoId.nextval, 
+		           #{usedNo},
+		           #{dir},
+		           #{fileName},
+		           #{originalName},
+		           #{fileType},
+		           #{fileSize},
 		            sysdate)
 	</insert>
-	<!-- 보드 수정 -->
-	<update id="boardModify" parameterType="boardDTO" >
-		UPDATE board 
-		SET    subject = #{subject}, 
-		       content = #{content}, 
-		       edit_date = sysdate 
-		WHERE  id = #{id} 
-	</update>
-	<!-- 보드 삭제 -->
-		<delete id="boardDelete" parameterType="boardDTO" >
-		DELETE FROM board 
-		WHERE  id = #{id}
+
+	<!-- 사진 삭제 -->
+		<delete id="photoDelete" parameterType="int" >
+		DELETE FROM photo 
+		WHERE  photoId = #{photoId}
 	</delete>
+	
+	<!-- 사진조회 by 차량번호 -->
+	<select id="photoSelectS" parameterType="String" resultType="PhotoDTO">
+		SELECT * FROM photo
+		WHERE fileName = #{fileName}
+	</select>
+	
+	<!-- 사진조회 by 사진아이디 -->
+	<select id="photoSelectI" parameterType="int" resultType="PhotoDTO">
+		SELECT * FROM photo
+		WHERE photoId = #{photoId}
+	</select>
+	
+	<!-- 사진조회 by 주차번호 -->
+	<select id="photoSelectU" parameterType="int" resultType="PhotoDTO">
+		SELECT * FROM photo
+		WHERE usedNo = #{usedNo}
+	</select>
 </mapper>

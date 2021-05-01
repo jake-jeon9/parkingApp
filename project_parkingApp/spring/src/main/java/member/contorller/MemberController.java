@@ -172,9 +172,7 @@ public class MemberController {
 		System.out.println("함수 실행 : deleteMember");
 		int memberNo = convertNo(request.getParameter("memberNo"));
 		int result = 0;
-		MemberDTO memberDTO = new MemberDTO();
-		memberDTO.setMemberNo(memberNo);
-		result = memberService.memberDelete(memberDTO);
+		result = memberService.memberDelete(memberNo);
 		System.out.println("함수 종료 : deleteMember");
 		return result;
 	}

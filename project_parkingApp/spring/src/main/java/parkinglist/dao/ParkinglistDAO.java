@@ -21,6 +21,10 @@ public class ParkinglistDAO {
 	public int parkinglistInsert(ParkinglistDTO parkinglistDTO) {
 		return sqlSession.insert("mybatis.parkinglistMapper.parkinglistInsert", parkinglistDTO);
 	}
+	public int parkinglistUpdate(ParkinglistDTO parkinglistDTO) {
+		return sqlSession.update("mybatis.parkinglistMapper.parkinglistUpdate", parkinglistDTO);
+	}
+	
 	public int parkinglistModify(ParkinglistDTO parkinglistDTO) {
 		return sqlSession.update("mybatis.parkinglistMapper.parkinglistModify", parkinglistDTO);
 	}

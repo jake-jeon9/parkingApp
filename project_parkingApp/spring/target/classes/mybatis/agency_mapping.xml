@@ -37,7 +37,7 @@
 	</update>
 	
 	<!-- delete agency -->
-	<delete id="agencyDelete" parameterType=int >
+	<delete id="agencyDelete" parameterType="int">
 		DELETE FROM agency 
 		WHERE  agencyNo = #{agencyNo}
 	</delete>

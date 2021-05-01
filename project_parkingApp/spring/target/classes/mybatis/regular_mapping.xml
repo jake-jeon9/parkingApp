@@ -38,7 +38,7 @@
 	</update>
 	
 	<!-- delete regular -->
-	<delete id="regularDelete" parameterType=int >
+	<delete id="regularDelete" parameterType="int">
 		DELETE FROM REGULAR 
 		WHERE  regularNo = #{regularNo}
 	</delete>

@@ -16,8 +16,8 @@ public class MemberDAO {
 	public int memberModify(MemberDTO memberDTO) {
 		return sqlSession.update("mybatis.memberMapper.memberModify", memberDTO);
 	}
-	public int memberDelete(MemberDTO memberDTO) {
-		return sqlSession.delete("mybatis.memberMapper.memberDelete", memberDTO);
+	public int memberDelete(int memberNo) {
+		return sqlSession.delete("mybatis.memberMapper.memberDelete", memberNo);
 	}
 	public MemberDTO memberSelect(String searchId) {
 		return sqlSession.selectOne("mybatis.memberMapper.memberSelect", searchId);

@@ -18,7 +18,10 @@ public class ParkinglistServiceImpl implements ParkinglistService {
 	public int parkinglistInsert(ParkinglistDTO parkinglistDTO) {
 		return parkinglistDAO.parkinglistInsert(parkinglistDTO);
 	}
-
+	@Override
+	public int parkinglistUpdate(ParkinglistDTO parkinglistDTO) {
+		return parkinglistDAO.parkinglistUpdate(parkinglistDTO);
+	}
 	@Override
 	public int parkinglistModify(ParkinglistDTO parkinglistDTO) {
 		return parkinglistDAO.parkinglistModify(parkinglistDTO);
@@ -36,5 +39,7 @@ public class ParkinglistServiceImpl implements ParkinglistService {
 	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate) {
 		return parkinglistDAO.parkinglistSelect(memberNo,startDate,endDate);
 	}
+
+	
 
 }
