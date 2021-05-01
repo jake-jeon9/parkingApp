@@ -23,8 +23,8 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int memberDelete(MemberDTO memberDTO) {
-		return memberDAO.memberDelete(memberDTO);
+	public int memberDelete(int memberNo) {
+		return memberDAO.memberDelete(memberNo);
 	}
 
 	@Override

@@ -14,8 +14,8 @@ public class CostServiceImpl implements CostService{
 	CostDAO costDAO;
 	
 	@Override
-	public int costInsert(CostDTO costDTO) {
-		return costDAO.costInsert(costDTO);
+	public int costInsert(int memberNo) {
+		return costDAO.costInsert(memberNo);
 	}
 
 	@Override
