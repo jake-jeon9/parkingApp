@@ -32,13 +32,35 @@ public class ParkinglistDAO {
 		return sqlSession.delete("mybatis.parkinglistMapper.parkinglistDelete", usedNo);
 	}
 	
-	//내주차장정보
-	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate) {
+	public ParkinglistDTO getSpacificitem(int memberNo,String plateNumOfCar) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("memberNo", memberNo);
+		map.put("startDate", plateNumOfCar);
+		return sqlSession.selectOne("mybatis.parkinglistMapper.getSpacificitem", map);
+	}
+	
+	public List<ParkinglistDTO> getTodayAll(int memberNo,int state,boolean coupon) {
+		int type = 0;
+		if(state == 1) type = 1;
+		if(state == 2) type = 2;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("memberNo", memberNo);
+		map.put("state", type);
+		map.put("coupon", coupon);
+		
+		return sqlSession.selectList("mybatis.parkinglistMapper.getTodayAll", map);
+	}
+	
+	//특정 기간 조회 startDate 가 null로 오면 전체 기간 조회
+	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate,String coupon,int startNum,int endNum) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
 		map.put("startDate", startDate);
 		map.put("endDate", endDate);
-		return sqlSession.selectList("mybatis.parkinglistMapper.mparkinglistSelect", map);
+		map.put("coupon", coupon);
+		map.put("startNum", startNum);
+		map.put("endNum", endNum);
+		return sqlSession.selectList("mybatis.parkinglistMapper.parkinglistSelect", map);
 	}
 
 	
