@@ -31,14 +31,23 @@ public class ParkinglistServiceImpl implements ParkinglistService {
 	public int parkinglistDelete(int usedNo) {
 		return parkinglistDAO.parkinglistDelete(usedNo);
 	}
+	@Override
+	public ParkinglistDTO getSpacificitem(int memberNo, String plateNumOfCar) {
+		return parkinglistDAO.getSpacificitem(memberNo, plateNumOfCar);
+	}
+	@Override
+	public List<ParkinglistDTO> getTodayAll(int memberNo, int state, boolean coupon) {
+		return parkinglistDAO.getTodayAll(memberNo, state, coupon);
+	}
+	@Override
+	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate, String coupon,
+			int startNum, int endNum) {
+		return parkinglistDAO.parkinglistSelect(memberNo, startDate, endDate, coupon, startNum, endNum);
+	}
 
 	
 	
 	
-	@Override
-	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate) {
-		return parkinglistDAO.parkinglistSelect(memberNo,startDate,endDate);
-	}
 
 	
 

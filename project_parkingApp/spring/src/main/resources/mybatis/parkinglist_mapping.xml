@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mybatis.boardMapper">
+<mapper namespace="mybatis.parkinglistMapper">
 	<!-- 주차 리스트 -->
 	<!-- 차량 입차 -->
 	<insert id="parkinglistInsert" parameterType="ParkinglistDTO" >
@@ -43,25 +43,51 @@
 	</update>
 	
 	<!-- 리스트 삭제 -->
-		<delete id="boardDelete" parameterType="boardDTO" >
+	<delete id="boardDelete" parameterType="int" >
 		DELETE FROM listOfparked 
 		WHERE  usedNo = #{usedNo}
 	</delete>
 	
 	<!-- 특정 차량 조회 -->
+	<select id = "getSpacificitem" parameterType="java.util.Map" resultType="ParkinglistDTO">
+		SELECT * FROM listofparked
+		WHERE memberNo = #{memberNo} and platenumofcar = #{platenumofcar}
+	</select>
 	
-	<!-- 오늘 차량 리스트 조회 -->
-	
-	<!-- 현재 in 인 차량 조회 -->
-	
-	<!-- 현재까지 out된 차량조회 -->
-	
-	<!-- 특정 기간 조회 -->
-	
-	<!-- coupon 멤버 조회 in -->
-	
-	<!-- coupon 멤버 조회 out -->
-	
+	<!-- 오늘 차량 리스트 조회  option : in or out and coupon true-->
+	<select id = "getTodayAll" parameterType="java.util.Map" resultType="ParkinglistDTO">
+		SELECT * FROM listofparked
+		WHERE memberNo = #{memberNo} and timeOfParked = sysdate
+		 <if test="state == 1"> 
+		  and currentofstate = 'in'
+		 </if>
+		 <if test="state == 2"> 
+		  and currentofstate = 'out'
+		 </if>
+		 <if test="coupon.equals(true)"> 
+		  and coupon = 'true'
+		 </if>
+	</select>
+
+	<!-- 페이징 기간 조회  option : 1. in or out 2. coupon true -->
+	<select id = "getTodayAll" parameterType="java.util.Map" resultType="ParkinglistDTO">
+		<![CDATA[
+		SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon 
+			FROM ( SELECT rownum rn, tt. * 
+				FROM( SELECT * FROM listofparked
+						 WHERE memberNo = #{memberNo} 
+							<if test = "startDate != null">
+								 AND timeOfParked BETWEEN
+								  #{startDate} AND #{endDate}
+		 						<if test="coupon.equals(true)"> 
+		  							 and coupon = #{coupon}'
+		 						</if>
+		 					</if>
+		 				ORDER BY usedNo DESC nulls last)
+		 		 tt)
+		 	WHERE rn>= #{startNum} and rn<= #{endNum}		 				
+		 ]]> 
+	</select>
 	
 	
 </mapper>
