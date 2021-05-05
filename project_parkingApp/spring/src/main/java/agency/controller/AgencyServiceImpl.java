@@ -35,8 +35,18 @@ public class AgencyServiceImpl implements AgencyService{
 	}
 
 	@Override
-	public int agencyUpdate(int memberNo) {
-		return agencyDAO.agencyUpdate(memberNo);
+	public int agencyUpdate(int agencyNo) {
+		return agencyDAO.agencyUpdate(agencyNo);
+	}
+
+	@Override
+	public String agencySelectSearchName(String nameOfAgency,int memberNo) {
+		return agencyDAO.agencySelectSearchName(nameOfAgency,memberNo);
+	}
+
+	@Override
+	public int agencyExtension(int agencyNo, int addMonths, int cost) {
+		return agencyDAO.agencyExtension(agencyNo, addMonths, cost);
 	}
 
 }

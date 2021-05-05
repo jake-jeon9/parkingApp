@@ -22,11 +22,17 @@ public class AgencyController {
 	AgencyService agencyService;
 	
 	@RequestMapping(value = "/agency/agency_insert.do")
-	public ModelAndView agencyInsert(HttpServletRequest request, MultipartFile[] photo) throws Exception {
+	public ModelAndView agencyInsert(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : agency_insert.do --");
 		request.setCharacterEncoding("UTF-8");
 		
-		String agencyRT = getResult(insertAgency(request));
+		String agencyRT = "FAIL";
+		boolean check = checkAgency(request);
+		if(check) {
+			agencyRT = getResult(insertAgency(request));
+		}else {
+			agencyRT = "이미 등록 됨";
+		}
 		
 		JSONObject json = new JSONObject();
 		json.put("agencyRT", agencyRT);
@@ -35,8 +41,9 @@ public class AgencyController {
 		return modelAndView(json);
 	}
 	
+
 	@RequestMapping(value = "/agency/agency_modify.do")
-	public ModelAndView agencyModify(HttpServletRequest request, MultipartFile[] photo) throws Exception {
+	public ModelAndView agencyModify(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : agency_modify.do --");
 		request.setCharacterEncoding("UTF-8");
 		
@@ -47,9 +54,37 @@ public class AgencyController {
 		System.out.println("-- 함수 종료 : agency_modify.do --\n");
 		return modelAndView(json);
 	}
+	
+	@RequestMapping(value = "/agency/agency_updateUsedcount.do")
+	public ModelAndView agency_updateUsedcount(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : agency_updateUsedcount.do --");
+		request.setCharacterEncoding("UTF-8");
+		
+		String agencyRT = getResult(updateUsedCount(request));
+		JSONObject json = new JSONObject();
+	    json.put("agencyRT", agencyRT);
+	      
+		System.out.println("-- 함수 종료 : agency_updateUsedcount.do --\n");
+		return modelAndView(json);
+	}
+	
+
+	@RequestMapping(value = "/agency/agency_extension.do")
+	public ModelAndView agencyExtension(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : agency_extension.do --");
+		request.setCharacterEncoding("UTF-8");
+		
+		String agencyRT = getResult(extension(request));
+		
+		JSONObject json = new JSONObject();
+	    json.put("agencyRT", agencyRT);
+	      
+		System.out.println("-- 함수 종료 : agency_extension.do --\n");
+		return modelAndView(json);
+	}
 
 	@RequestMapping(value = "/agency/agency_delete.do")
-	public ModelAndView agencyDelete(HttpServletRequest request, MultipartFile photo) throws Exception {
+	public ModelAndView agencyDelete(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : agency_delete.do --");
 		request.setCharacterEncoding("UTF-8");
 		String agencyRT = "FAIL";
@@ -61,7 +96,6 @@ public class AgencyController {
 		return modelAndView(json);
 	}
 	
-
 	@RequestMapping(value = "/agency/agency_Select.do")
 	public ModelAndView searchKeyword(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : agency_Select.do --");
@@ -85,33 +119,40 @@ public class AgencyController {
 		return modelAndView(json);
 	}
 	
+	private boolean checkAgency(HttpServletRequest request) {
+		System.out.println("함수 실행 : checkAgency");
+		boolean result = false;
+		String targetName = request.getParameter("nameOfAgency");
+		int memberNo = convert(request.getParameter("memberNo"));
+		String nameOfAgency = agencyService.agencySelectSearchName(targetName,memberNo);
+		if(nameOfAgency == null ) result = true;
+		
+		System.out.println("함수 종료 : checkAgency");
+		return result;
+	}
 
 	public int insertAgency(HttpServletRequest request) {
-		System.out.println("함수 실행 : insertBoard");
+		System.out.println("함수 실행 : insertAgency");
 		// 기본 정보
 		int memberNo = convert(request.getParameter("memberNo"));
 		String nameOfAgency = request.getParameter("nameOfAgency");
 		String contactName= request.getParameter("contactName");
-		String contacnPhone= request.getParameter("contacnPhone");
-//		String issueOfDate= "sysdate";
+		String contactPhone= request.getParameter("contactPhone");
 		String expireOfDate= request.getParameter("expireOfDate");
-//	    int countOfextend= 0;
 	    int paid= convert(request.getParameter("paid"));
-//	    int usedCount= 1;
-//		
-		// 보드 작성
+
+	    // 보드 작성
 		AgencyDTO agencyDTO = new AgencyDTO();
 		agencyDTO.setMemberNo(memberNo);
 		agencyDTO.setNameOfAgency(nameOfAgency);
-		agencyDTO.setContacnPhone(contacnPhone);
+		agencyDTO.setContactPhone(contactPhone);
 		agencyDTO.setContactName(contactName);
-//		agencyDTO.setIssueOfDate(issueOfDate);
 		agencyDTO.setExpireOfDate(expireOfDate);
 		agencyDTO.setPaid(paid);
 		
 		
 		int result = agencyService.agencyInsert(agencyDTO);
-		System.out.println("함수 종료 : insertBoard");
+		System.out.println("함수 종료 : insertAgency");
 		return result;
 	}
 	
@@ -122,7 +163,7 @@ public class AgencyController {
 		int agencyNo = convert(request.getParameter("agencyNo"));
 		String nameOfAgency = request.getParameter("nameOfAgency");
 		String contactName= request.getParameter("contactName");
-		String contacnPhone= request.getParameter("contacnPhone");
+		String contacnPhone= request.getParameter("contactPhone");
 		String issueOfDate= request.getParameter("issueOfDate");
 		String expireOfDate= request.getParameter("expireOfDate");
 	    int countOfextend=  convert(request.getParameter("countOfextend"));
@@ -132,7 +173,7 @@ public class AgencyController {
 		AgencyDTO agencyDTO = new AgencyDTO();
 		agencyDTO.setAgencyNo(agencyNo);
 		agencyDTO.setNameOfAgency(nameOfAgency);
-		agencyDTO.setContacnPhone(contacnPhone);
+		agencyDTO.setContactPhone(contacnPhone);
 		agencyDTO.setContactName(contactName);
 		agencyDTO.setIssueOfDate(issueOfDate);
 		agencyDTO.setExpireOfDate(expireOfDate);
@@ -144,6 +185,33 @@ public class AgencyController {
 	    System.out.println("함수 종료 : modifyAgency");
 		return result;
 	}
+	
+	private int extension(HttpServletRequest request) {
+		System.out.println("함수 시작 : extension");
+		int result = 0;
+		
+		int agencyNo = convert(request.getParameter("agencyNo"));
+		int addMonths = convert(request.getParameter("addMonths"));
+		int cost =  convert(request.getParameter("cost"));
+		
+		result =  agencyService.agencyExtension(agencyNo, addMonths, cost);
+		
+		System.out.println("함수 종료 : extension");
+		return result;
+	}
+	
+	private int updateUsedCount(HttpServletRequest request) {
+		System.out.println("함수 시작 : updateUsedCount");
+		int result = 0;
+		
+		int agencyNo = convert(request.getParameter("agencyNo"));
+		result = agencyService.agencyUpdate(agencyNo);
+
+		System.out.println("함수 종료 : updateUsedCount");
+		return result;
+	}
+
+
 	
 	public int deleteAgency(HttpServletRequest request) {
 		System.out.println("함수 실행 : deleteAgency");
@@ -174,7 +242,7 @@ public class AgencyController {
 	public ModelAndView modelAndView(JSONObject json) {
 		ModelAndView modelAndView = new ModelAndView();
 	    modelAndView.addObject("json", json);
-	    modelAndView.setViewName("board.jsp");
+	    modelAndView.setViewName("agency.jsp");
 	    return modelAndView;
 	}
 	

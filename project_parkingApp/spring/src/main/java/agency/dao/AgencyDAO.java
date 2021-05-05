@@ -1,4 +1,5 @@
 package agency.dao;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -21,12 +22,27 @@ public class AgencyDAO {
 	public int agencyDelete(AgencyDTO agencyDTO) {
 		return sqlSession.delete("mybatis.agencyMapper.agencyDelete", agencyDTO);
 	}
-	public int agencyUpdate(int memberNo) {
-		return sqlSession.update("mybatis.agencyMapper.agencyUpdate", memberNo);
+	public int agencyUpdate(int agencyNo) {
+		return sqlSession.update("mybatis.agencyMapper.agencyUpdate", agencyNo);
+	}
+	
+	public int agencyExtension(int agencyNo,int addMonths,int cost) {
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("agencyNo",agencyNo);
+		map.put("addMonths",addMonths);
+		map.put("paid",cost);
+		System.out.println(map.toString());
+		return sqlSession.update("mybatis.agencyMapper.agencyExtension", map);
 	}
 	
 	public List<AgencyDTO> agencySelect(int memberNo) {
 		return sqlSession.selectList("mybatis.agencyMapper.agencySelect", memberNo);
+	}
+	public String agencySelectSearchName(String nameOfAgency,int memberNo){
+		HashMap<String,Object> map =new HashMap<>();
+		map.put("nameOfAgency", nameOfAgency);
+		map.put("memberNo", memberNo);
+		return sqlSession.selectOne("mybatis.agencyMapper.agencySelectSearchName", map);
 	}
 	
 
