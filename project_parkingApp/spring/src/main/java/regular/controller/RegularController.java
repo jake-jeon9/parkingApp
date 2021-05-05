@@ -170,7 +170,7 @@ public class RegularController {
 	public ModelAndView modelAndView(JSONObject json) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("json", json);
-		modelAndView.setViewName("board.jsp");
+		modelAndView.setViewName("regular.jsp");
 		return modelAndView;
 	}
 

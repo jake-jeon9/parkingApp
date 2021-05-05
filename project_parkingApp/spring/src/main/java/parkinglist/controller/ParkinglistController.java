@@ -283,7 +283,7 @@ public class ParkinglistController {
 	public ModelAndView modelAndView(JSONObject json) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("json", json);
-		modelAndView.setViewName("board.jsp");
+		modelAndView.setViewName("parkinglist.jsp");
 		return modelAndView;
 	}
 	

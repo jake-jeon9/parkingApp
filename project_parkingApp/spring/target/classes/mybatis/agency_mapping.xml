@@ -11,21 +11,26 @@
 		            #{memberNo}, 
 		            #{nameOfAgency}, 
 		            #{contactName},
-		            #{contacnPhone},
+		            #{contactPhone},
 		            sysdate,
-		            add_months(sysdate,#{expireOfDate}),
+		            #{expireOfDate},
 		            0,
 		            #{paid},
-		            0)
+		            0,
+		            sysdate)
 	</insert>
 	<!-- agency modify -->
 	<update id="agencyModify" parameterType="agencyDTO" >
 		UPDATE agency 
 		SET    contactName = #{contactName}, 
-		       contacnPhone = #{contacnPhone}, 
+			   nameOfAgency = #{nameOfAgency},
+		       contactPhone = #{contactPhone}, 
+		       issueOfDate = #{issueOfDate},
 		       expireOfDate = #{expireOfDate},
 			   countOfextend = #{countOfextend},
-			   paid = #{paid}
+			   paid = #{paid},
+			   usedCount = #{usedCount},
+			   reg_date = sysdate
 		WHERE  agencyNo = #{agencyNo} 
 	</update>
 	
@@ -33,7 +38,16 @@
 	<update id="agencyUpdate" parameterType="int" >
 		UPDATE agency 
 		SET 	usedCount = usedCount+1
-		WHERE	agencyNo = 2;
+		WHERE	agencyNo = #{agencyNo}
+	</update>
+	
+	<!-- extend expireDate -->
+	<update id="agencyExtension" parameterType="java.util.Map" >
+		UPDATE agency 
+		SET    expireofdate = add_months(to_date(expireofdate),#{addMonths}),
+               paid = paid + #{paid},
+               countOfextend = countOfextend + 1
+        WHERE  agencyNo = #{agencyNo};
 	</update>
 	
 	<!-- delete agency -->
@@ -47,5 +61,11 @@
 		SELECT * FROM agency
 		WHERE memberNo = #{memberNo}
 	</select>
+	
+	<select id="agencySelectSearchName" parameterType="java.util.Map" resultType="String">
+		SELECT nameOfAgency FROM agency
+		WHERE nameOfAgency = #{nameOfAgency} and memberNo = #{memberNo}
+	</select>
+	
 	
 </mapper>
