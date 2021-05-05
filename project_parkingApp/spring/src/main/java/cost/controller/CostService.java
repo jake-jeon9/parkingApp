@@ -6,5 +6,5 @@ public interface CostService {
 	public int costInsert(int memberNo) ;
 	public int costModify(CostDTO costDTO) ;
 	public int costDelete(int memberNo) ;
-	public int costSelect(CostDTO costDTO) ;
+	public CostDTO costSelect(int memberNo) ;
 }

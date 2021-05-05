@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.agencyMapper">
 	<!-- agency -->
 	<!-- agency insert -->
-	<insert id="agencyInsert" parameterType="agencyDTO">
+	<insert id="agencyInsert" parameterType="agencyDTO" useGeneratedKeys="true" keyColumn="agencyNo,memberNo" keyProperty="agencyNo,memberNo">
 		INSERT INTO Agency 
 		VALUES     (seq_agency.nextval, 
 		            #{memberNo}, 

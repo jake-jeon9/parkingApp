@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.memberMapper">
 	<!-- member -->
 	<!-- enroll new member   -->
-	<insert id="memberInsert" parameterType="memberDTO" >
+	<insert id="memberInsert" parameterType="memberDTO" useGeneratedKeys="true" keyColumn="memberNo" keyProperty="memberNo">
 		INSERT INTO member 
 		VALUES     (seq_member.nextval, 
 		            #{memberId}, 
@@ -19,10 +19,10 @@
 	<!-- member modify -->
 	<update id="memberModify" parameterType="memberDTO" >
 		UPDATE member 
-		SET    PW = #{PW}, 
+		SET    pw = #{pw}, 
 		       email = #{email}, 
-		       nameOfParkingArea = #{nameOfParkingArea},
-		       phone = #{phone}
+		       nameOfParkingArea = #{nameOfParkingArea}, 
+		       phone = #{phone} 
 		WHERE  memberNo = #{memberNo} 
 	</update>
 	
@@ -33,9 +33,18 @@
 	</delete>
 	
 	<!-- search id -->
-	<select id="memberSelect" parameterType="String">
-		SELECT * FROM MEMBER 
-		where memberId = #{searchId}
+	 <select id="memberSelect" parameterType="String" resultType="String" >
+		SELECT email FROM MEMBER 
+		WHERE memberId = #{memberId}
 	</select>
+	
+	<!-- log in -->
+	<select id="memberlogin" parameterType="memberDTO" resultType="memberDTO" >
+		SELECT * FROM MEMBER 
+		WHERE memberId = #{memberId} AND pw = #{pw}
+	</select>
+	
+
+
 	
 </mapper>

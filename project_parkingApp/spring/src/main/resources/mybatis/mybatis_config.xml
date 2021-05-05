@@ -17,7 +17,7 @@
 		<!-- 사진 -->
 		<typeAlias type="photo.bean.PhotoDTO" alias="photoDTO"/>
 		<!-- 정기주차 -->
-		<typeAlias type="regular.bean.RegularDTO" alias="RegularDTO"/>
+		<typeAlias type="regular.bean.RegularDTO" alias="regularDTO"/>
 		
 	</typeAliases>
 	

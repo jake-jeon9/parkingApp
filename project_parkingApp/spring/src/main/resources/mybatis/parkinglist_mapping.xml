@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.parkinglistMapper">
 	<!-- 주차 리스트 -->
 	<!-- 차량 입차 -->
-	<insert id="parkinglistInsert" parameterType="ParkinglistDTO" >
+	<insert id="parkinglistInsert" parameterType="parkinglistDTO" useGeneratedKeys="true" keyColumn="usedNo,memberNo,timeOfParked,currentOfState" keyProperty="usedNo,memberNo,timeOfParked,currentOfState">
 		INSERT INTO listOfparked 
 		VALUES     (seq_listOfParked.nextval,
 		           #{memberNo},
@@ -19,7 +19,7 @@
 				   )
 	</insert>
 	<!-- 차량 출차 -->
-	<update id="parkinglistUpdate" parameterType="ParkinglistDTO" >
+	<update id="parkinglistUpdate" parameterType="parkinglistDTO" >
 		UPDATE listOfparked 
 		SET    currentOfState = #{currentOfState}, 
 			   timeOfused = to_data(#{timeOfused}),
@@ -30,7 +30,7 @@
 	</update>
 	
 	<!-- 정보수정 -->
-	<update id="parkinglistModify" parameterType="ParkinglistDTO" >
+	<update id="parkinglistModify" parameterType="parkinglistDTO" >
 		UPDATE listOfparked 
 		SET    plateNumOfCar = #{plateNumOfCar}, 
 			   currentOfState=#{currentOfState},
@@ -43,19 +43,19 @@
 	</update>
 	
 	<!-- 리스트 삭제 -->
-	<delete id="boardDelete" parameterType="int" >
+	<delete id="parkinglistDelete" parameterType="int" >
 		DELETE FROM listOfparked 
 		WHERE  usedNo = #{usedNo}
 	</delete>
 	
 	<!-- 특정 차량 조회 -->
-	<select id = "getSpacificitem" parameterType="java.util.Map" resultType="ParkinglistDTO">
+	<select id = "getSpacificitem" parameterType="java.util.Map" resultType="parkinglistDTO">
 		SELECT * FROM listofparked
 		WHERE memberNo = #{memberNo} and platenumofcar = #{platenumofcar}
 	</select>
 	
 	<!-- 오늘 차량 리스트 조회  option : in or out and coupon true-->
-	<select id = "getTodayAll" parameterType="java.util.Map" resultType="ParkinglistDTO">
+	<select id = "getTodayAll" parameterType="java.util.Map" resultType="parkinglistDTO">
 		SELECT * FROM listofparked
 		WHERE memberNo = #{memberNo} and timeOfParked = sysdate
 		 <if test="state == 1"> 
@@ -70,7 +70,7 @@
 	</select>
 
 	<!-- 페이징 기간 조회  option : 1. in or out 2. coupon true -->
-	<select id = "getTodayAll" parameterType="java.util.Map" resultType="ParkinglistDTO">
+	<select id = "parkinglistSelect" parameterType="java.util.Map" resultType="parkinglistDTO">
 		<![CDATA[
 		SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon 
 			FROM ( SELECT rownum rn, tt. * 

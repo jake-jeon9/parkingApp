@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.regularMapper">
 	<!-- regular -->
 	<!-- regular insert -->
-	<insert id="regularInsert" parameterType="regularDTO">
+	<insert id="regularInsert" parameterType="regularDTO" useGeneratedKeys="true" keyColumn="regularNo,memberNo" keyProperty="regularNo,memberNo">
 		INSERT INTO REGULAR 
 		VALUES     (seq_regular.nextval, 
 		            #{memberNo}, 

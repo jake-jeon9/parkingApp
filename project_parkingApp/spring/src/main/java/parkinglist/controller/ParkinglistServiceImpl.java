@@ -36,7 +36,7 @@ public class ParkinglistServiceImpl implements ParkinglistService {
 		return parkinglistDAO.getSpacificitem(memberNo, plateNumOfCar);
 	}
 	@Override
-	public List<ParkinglistDTO> getTodayAll(int memberNo, int state, boolean coupon) {
+	public List<ParkinglistDTO> getTodayAll(int memberNo, int state, String coupon) {
 		return parkinglistDAO.getTodayAll(memberNo, state, coupon);
 	}
 	@Override

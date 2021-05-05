@@ -5,9 +5,9 @@
 <mapper namespace="mybatis.costMapper">
 	<!-- 요금 -->
 	<!-- 요금 추가 -->
-	<insert id="costInsert" parameterType="int" >
+	<insert id="costInsert" parameterType="int" useGeneratedKeys="true" keyColumn="memberNo" keyProperty="memberNo">
 		INSERT INTO cost 
-		VALUES     #{memberNo}
+		VALUES  (  #{memberNo},
 		           DEFAULT,
 				   DEFAULT,
 				   DEFAULT,
@@ -27,7 +27,7 @@
 			   maxcost = #{maxcost},
 			   maxtime = #{maxtime},
 			   maxArea = #{maxArea},
-		       reg_date = sysdate
+		       reg_date = sysdate 
 		WHERE  memberNo = #{memberNo} 
 	</update>
 	<!-- 요금 삭제 -->
@@ -37,7 +37,7 @@
 	</delete>
 	<!-- 요금조회 -->
 	<select id="costSelect" parameterType="int" resultType="costDTO">
-		SELECT * FROM cost
+		SELECT * FROM cost 
 		WHERE memberNo = #{memberNo}
 	</select>
 	

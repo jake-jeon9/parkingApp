@@ -79,15 +79,71 @@ public class ParkinglistController {
 		return modelAndView(json);
 	}
 	
+	@RequestMapping(value = "/parkinglist/parkinglist_searchSpacifictItem.do")
+	public ModelAndView searchSpacifictItem(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : searchSpacifictItem.do --");
+		request.setCharacterEncoding("UTF-8");
+		String RT = "FAIL";
+		int memberNo = convert(request.getParameter("memberNo"));
+		String plateNumOfCar = request.getParameter("plateNumOfCar");
+		ParkinglistDTO parkinglistDTO = parkinglistService.getSpacificitem(memberNo,plateNumOfCar);
+		JSONObject json = new JSONObject();
+		
+		if(parkinglistDTO != null) {
+			RT = "OK";
+			json.put("parkinglistDTO", parkinglistDTO);
+		}
+		json.put("RT", RT);
+		System.out.println("-- 함수 종료 : searchSpacifictItem.do --");
+		return modelAndView(json);
+	}
+	
+	@RequestMapping(value = "/parkinglist/parkinglist_searchTodayitems.do")
+	public ModelAndView searchTodayList(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : parkinglist_searchTodayitems.do --");
+		request.setCharacterEncoding("UTF-8");
+		String RT = "FAIL";
+		int memberNo = convert(request.getParameter("memberNo"));
+		String currentOfState = request.getParameter("currentOfState");
+		int state = 0;
+		if(currentOfState.equals("in")) state = 1;
+		if(currentOfState.equals("out")) state = 2;
+		String coupon =request.getParameter("coupon");
+		List<ParkinglistDTO> list = parkinglistService.getTodayAll(memberNo, state, coupon);
+		JSONObject json = new JSONObject();
+		
+		if(list != null) {
+			RT = "OK";
+			JSONArray parkingList = new JSONArray();
+			int size = list.size();
+			for(ParkinglistDTO parkinglistDTO : list) {
+				parkingList.put(parkinglistDTO);
+			}
+			json.put("parkingList", parkingList);
+			json.put("size", size);
+		}
+		json.put("RT", RT);
+		System.out.println("-- 함수 종료 : parkinglist_searchTodayitems.do --");
+		return modelAndView(json);
+	}
+	
 	@RequestMapping(value = "/parkinglist/parkinglist_Select.do")
 	public ModelAndView searchKeyword(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : parkinglist_Select.do --");
 		request.setCharacterEncoding("UTF-8");
 		String RT = "FAIL";
 		int memberNo = convert(request.getParameter("memberNo"));
+		String coupon = request.getParameter("coupon");
 		String startDate = request.getParameter("startDate");
 		String endDate = request.getParameter("endDate");
-		List<ParkinglistDTO> list = parkinglistService.parkinglistSelect(memberNo,startDate,endDate);
+		
+		//페이징
+		int page = convert(request.getParameter("page"));
+		int count = 10;
+		int endNum = page * count; 
+		int startNum = endNum - (count - 1);
+		
+		List<ParkinglistDTO> list = parkinglistService.parkinglistSelect(memberNo,startDate,endDate,coupon,startNum,endNum);
 		JSONObject json = new JSONObject();
 		
 		if(list != null) {
@@ -203,7 +259,7 @@ public class ParkinglistController {
         photoDTO.setFileSize(filesize);
         photoDTO.setUsedNo(usedNo);
         
-        result = photoService.foretPhotoWrite(photoDTO);
+        result = photoService.photoWrite(photoDTO);
         System.out.println("함수 종료 : parkedCarPhotoWrite");
 		return result;
 	}
