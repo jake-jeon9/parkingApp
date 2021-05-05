@@ -28,21 +28,54 @@ public class CostController {
 	public ModelAndView memberModify(HttpServletRequest request, MultipartFile photo) throws Exception {
 		System.out.println("-- 함수 실행 : cost_modify.do --");
 		request.setCharacterEncoding("UTF-8");
-	    
 		String costRT = "FAIL";
 		
 		// 비용수정
-		costRT = getResult(modifyMember(request));
+		costRT = getResult(modifyCost(request));
 	    
+		//갱신
+		int memberNo = convertNo(request.getParameter("memberNo"));
+		CostDTO costDTO = null;
+		JSONObject COST = null;
+		if(costRT.equals("OK")) {
+			costDTO = getMyCostInfo(memberNo);
+			COST = new JSONObject();
+			int additionalCost = costDTO.getAdditionalCost();
+		    int additionalTiem =costDTO.getAdditionalTiem(); 
+		    int baseCost =costDTO.getBaseCost();
+		    int baseTime =costDTO.getBaseTime();
+		    int maxcost = costDTO.getMaxcost();
+		    int maxtime = costDTO.getMaxtime();
+		    int maxArea = costDTO.getMaxArea();
+		    
+		    COST.put("additionalCost",additionalCost );
+		    COST.put("additionalTiem",additionalTiem );
+		    COST.put("baseCost",baseCost );
+		    COST.put("baseTime",baseTime );
+		    COST.put("maxcost",maxcost );
+		    COST.put("maxtime",maxtime );
+		    COST.put("maxArea",maxArea );
+		}
+		
+		
+		
 	    JSONObject json = new JSONObject();
 	    json.put("costRT", costRT);
+	    json.put("CostDTO", COST);
 	      
 	    System.out.println("-- 함수 종료 : cost_modify.do --\n");
 	    return modelAndView(json);
 	}
+	
+	private CostDTO getMyCostInfo(int memberNo) {
+		System.out.println("함수 실행 : getMyCostInfo");
+		CostDTO costDTO = costService.costSelect(memberNo);
+		System.out.println("함수 종료 : getMyCostInfo");
+		return costDTO;
+	}
 		
-	public int modifyMember(HttpServletRequest request) {
-		System.out.println("함수 실행 : modifyMember");
+	public int modifyCost(HttpServletRequest request) {
+		System.out.println("함수 실행 : modifyCost");
 		int result = 0;
 		// 기본 정보
 		int memberNo = convertNo(request.getParameter("memberNo"));
@@ -66,7 +99,7 @@ public class CostController {
 	    costDTO.setMaxArea(maxArea);
 	   
 	    result = costService.costModify(costDTO);
-	    System.out.println("함수 종료 : modifyMember");
+	    System.out.println("함수 종료 : modifyCost");
 		return result;
 	}
 	
@@ -89,7 +122,7 @@ public class CostController {
 	public ModelAndView modelAndView(JSONObject json) {
 		ModelAndView modelAndView = new ModelAndView();
 	    modelAndView.addObject("json", json);
-	    modelAndView.setViewName("search.jsp");
+	    modelAndView.setViewName("cost.jsp");
 	    return modelAndView;
 	}
 }

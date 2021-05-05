@@ -28,8 +28,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public MemberDTO memberSelect(String searchId) {
+	public String memberSelect(String searchId) {
 		return memberDAO.memberSelect(searchId);
+	}
+
+	@Override
+	public MemberDTO memberLogin(MemberDTO memberDTO) {
+		return memberDAO.memberLogin(memberDTO);
 	}
 
 }

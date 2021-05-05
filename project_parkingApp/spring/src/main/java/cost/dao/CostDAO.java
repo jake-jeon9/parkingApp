@@ -22,8 +22,8 @@ public class CostDAO {
 	public int costDelete(int memberNo) {
 		return sqlSession.delete("mybatis.costMapper.costDelete", memberNo);
 	}
-	public int costSelect(CostDTO costDTO) {
-		return sqlSession.selectOne("mybatis.costMapper.costSelectOne", costDTO);
+	public CostDTO costSelect(int memberNo) {
+		return sqlSession.selectOne("mybatis.costMapper.costSelect", memberNo);
 	}
 	
 }

@@ -24,19 +24,19 @@
 	</delete>
 	
 	<!-- 사진조회 by 차량번호 -->
-	<select id="photoSelectS" parameterType="String" resultType="PhotoDTO">
+	<select id="photoSelectS" parameterType="String" resultType="photoDTO">
 		SELECT * FROM photo
 		WHERE fileName = #{fileName}
 	</select>
 	
 	<!-- 사진조회 by 사진아이디 -->
-	<select id="photoSelectI" parameterType="int" resultType="PhotoDTO">
+	<select id="photoSelectI" parameterType="int" resultType="photoDTO">
 		SELECT * FROM photo
 		WHERE photoId = #{photoId}
 	</select>
 	
 	<!-- 사진조회 by 주차번호 -->
-	<select id="photoSelectU" parameterType="int" resultType="PhotoDTO">
+	<select id="photoSelectU" parameterType="int" resultType="photoDTO">
 		SELECT * FROM photo
 		WHERE usedNo = #{usedNo}
 	</select>

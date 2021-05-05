@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import cost.bean.CostDTO;
 import cost.controller.CostService;
 import member.bean.MemberDTO;
 
@@ -40,6 +41,67 @@ public class MemberController {
 		return modelAndView(json);
 	}
 	
+	@RequestMapping(value = "/member/member_Login.do")
+	public ModelAndView memberLogin(HttpServletRequest request, MultipartFile photo) throws Exception {
+		System.out.println("-- 함수 실행 : member_Login.do --");
+		request.setCharacterEncoding("UTF-8");
+		
+		String memberRT = "FAIL"; 
+		String costRT = "FAIL";
+		MemberDTO memberDTO = getMyinfo(request);
+		CostDTO costDTO = getMyCostInfo(memberDTO.getMemberNo());
+		
+		JSONObject DTO = null;
+		JSONObject COST = null;
+		if(memberDTO !=null) {
+
+			memberRT = "OK";
+			costRT = "OK";
+			DTO = new JSONObject();
+			COST = new JSONObject();
+			int memberNo = memberDTO.getMemberNo();
+			String memberId = memberDTO.getMemberId();
+			String email = memberDTO.getEmail();
+			String pw = memberDTO.getPw();
+		    String nameOfParkingArea = memberDTO.getNameOfParkingArea();
+		    String phone = memberDTO.getPhone();
+		    DTO.put("memberNo", memberNo);
+		    DTO.put("memberId", memberId);
+		    DTO.put("email", email);
+		    DTO.put("pw", pw);
+		    DTO.put("nameOfParkingArea", nameOfParkingArea);
+		    DTO.put("phone", phone);
+			
+		    int additionalCost = costDTO.getAdditionalCost();
+		    int additionalTiem =costDTO.getAdditionalTiem(); 
+		    int baseCost =costDTO.getBaseCost();
+		    int baseTime =costDTO.getBaseTime();
+		    int maxcost = costDTO.getMaxcost();
+		    int maxtime = costDTO.getMaxtime();
+		    int maxArea = costDTO.getMaxArea();
+		    
+		    COST.put("additionalCost",additionalCost );
+		    COST.put("additionalTiem",additionalTiem );
+		    COST.put("baseCost",baseCost );
+		    COST.put("baseTime",baseTime );
+		    COST.put("maxcost",maxcost );
+		    COST.put("maxtime",maxtime );
+		    COST.put("maxArea",maxArea );
+		    
+		}
+		
+	    JSONObject json = new JSONObject();
+	    json.put("memberRT", memberRT);
+	    json.put("costRT", costRT);
+	    json.put("memberDTO", DTO);
+	    json.put("CostDTO", COST);
+	    System.out.println("-- 함수 종료 : member_Login.do --\n");
+	    return modelAndView(json);
+	}
+	
+
+
+
 	@RequestMapping(value = "/member/member_insert.do")
 	public ModelAndView memberWrite(HttpServletRequest request, MultipartFile photo) throws Exception {
 		System.out.println("-- 함수 실행 : member_insert.do --");
@@ -47,26 +109,18 @@ public class MemberController {
 		
 		String memberRT = "FAIL"; 
 		String costRT = "FAIL";
-	    
-	    // 회원 등록 후 회원 아이디 가져오기
-		int result = searchId(request); // 0이면 아이디 없음
-		if( result ==0 ) {
-			result = insertMember(request);
-		}
-		if(result >0) {
+		
+		int result = insertMember(request);
+		
+		if(result != 0) {
 			memberRT = getResult(result);
+			costRT = getResult(insertSetCost(result));
 		}
-		MemberDTO memberDTO = insertSetCost(request);
 
-		if(memberDTO != null) {
-			costRT = getResult(result); 
-		}
-    
 	    JSONObject json = new JSONObject();
 	    json.put("memberRT", memberRT);
 	    json.put("costRT", costRT);
-	    json.put("memberNo", memberDTO.getMemberNo());
-	      
+	    json.put("memberNo", result);
 	    System.out.println("-- 함수 종료 : member_insert.do --\n");
 	    return modelAndView(json);
 	}
@@ -97,7 +151,7 @@ public class MemberController {
 		memberRT = getResult(deleteMember(request));
 		
 		if(memberRT.equals("OK")) {
-			costRT = getResult(deleteCost(request));
+			costRT ="OK";
 		}
 		
 		JSONObject json = new JSONObject();
@@ -113,12 +167,35 @@ public class MemberController {
 		int result = 0;
 		
 		String searchId = request.getParameter("memberId");
-		MemberDTO memberDTO = memberService.memberSelect(searchId);
+		//System.out.println("searchId : "+searchId);
+		String searchedId = memberService.memberSelect(searchId);
 		
-		if(memberDTO != null) result = 1;
+		if(searchedId != null) result = 1;
 		System.out.println("함수 종료 : searchId");
 		return result;
 	}
+	
+	private MemberDTO getMyinfo(HttpServletRequest request) {
+		System.out.println("함수 실행 : getMyinfo");
+		// 기본 정보
+		String memberId = request.getParameter("memberId");
+		String pw = request.getParameter("pw");
+		MemberDTO memberDTO = new MemberDTO();
+	    memberDTO.setMemberId(memberId);
+	    memberDTO.setPw(pw);
+	    memberDTO = memberService.memberLogin(memberDTO);
+		
+	    System.out.println("함수 종료 : getMyinfo");
+		return memberDTO;
+	}
+	
+	private CostDTO getMyCostInfo(int memberNo) {
+		System.out.println("함수 실행 : getMyCostInfo");
+		CostDTO costDTO = costService.costSelect(memberNo);
+		System.out.println("함수 종료 : getMyCostInfo");
+		return costDTO;
+	}
+
 	public int insertMember(HttpServletRequest request) {
 		System.out.println("함수 실행 : insertMember");
 		// 기본 정보
@@ -137,31 +214,35 @@ public class MemberController {
 	    memberDTO.setNameOfParkingArea(nameOfParkingArea);
 	    memberDTO.setPhone(phone);
 	    
-	    int result = memberService.memberInsert(memberDTO);
+	    memberService.memberInsert(memberDTO);
+	    int result = memberDTO.getMemberNo();
 		return result;
 	}
 	
-	public MemberDTO insertSetCost(HttpServletRequest request) {
+	public int insertSetCost(int memberNo) {
 		System.out.println("함수 실행 : insertSetCost");
-		String memberId = request.getParameter("memberId");
+		int result = costService.costInsert(memberNo);
 		System.out.println("함수 종료 : insertSetCost");
-		return memberService.memberSelect(memberId);
+		return result;
 	}
 		
 	public int modifyMember(HttpServletRequest request) {
 		System.out.println("함수 실행 : modifyMember");
 		int result = 0;
 		// 기본 정보
-		int id = convertNo(request.getParameter("memberNo"));
+		int memberNo = convertNo(request.getParameter("memberNo"));
 		String pw = request.getParameter("pw");
+		String email = request.getParameter("email");
 	    String nameOfParkingArea = request.getParameter("nameOfParkingArea");
 	    String phone = request.getParameter("phone");
 
 	    //멤버 작성
 	    MemberDTO memberDTO = new MemberDTO();
+	    memberDTO.setMemberNo(memberNo);
 	    memberDTO.setPw(pw);
 	    memberDTO.setNameOfParkingArea(nameOfParkingArea);
 	    memberDTO.setPhone(phone);
+	    memberDTO.setEmail(email);
 	    
 	    result = memberService.memberModify(memberDTO);
 	    System.out.println("함수 종료 : modifyMember");
@@ -174,14 +255,16 @@ public class MemberController {
 		int result = 0;
 		result = memberService.memberDelete(memberNo);
 		System.out.println("함수 종료 : deleteMember");
+		if(result >0) result = deleteCost(memberNo);
+		
 		return result;
 	}
 	
-	public int deleteCost(HttpServletRequest request) {
+	public int deleteCost(int memberNo) {
 		System.out.println("함수 실행 : insertSetCost");
-		int memberNo = convertNo(request.getParameter("memberNo"));
+		int result = costService.costDelete(memberNo);
 		System.out.println("함수 종료 : insertSetCost");
-		return costService.costDelete(memberNo);
+		return result ; 
 	}
 	
 	public int convertNo(String id) {
@@ -194,9 +277,11 @@ public class MemberController {
 			return Integer.parseInt(id);
 		}
 	}
+	
 	public String getResult(int result) {
 		return result > 0 ? "OK" : "FAIL";
 	}
+	
 	public ModelAndView modelAndView(JSONObject json) {
 		ModelAndView modelAndView = new ModelAndView();
 	    modelAndView.addObject("json", json);

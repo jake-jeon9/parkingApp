@@ -29,8 +29,8 @@ public class CostServiceImpl implements CostService{
 	}
 
 	@Override
-	public int costSelect(CostDTO costDTO) {
-		return costDAO.costSelect(costDTO);
+	public CostDTO costSelect(int memberNo) {
+		return costDAO.costSelect(memberNo);
 	}
 
 }

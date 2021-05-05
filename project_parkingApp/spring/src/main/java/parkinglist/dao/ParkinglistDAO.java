@@ -39,15 +39,11 @@ public class ParkinglistDAO {
 		return sqlSession.selectOne("mybatis.parkinglistMapper.getSpacificitem", map);
 	}
 	
-	public List<ParkinglistDTO> getTodayAll(int memberNo,int state,boolean coupon) {
-		int type = 0;
-		if(state == 1) type = 1;
-		if(state == 2) type = 2;
+	public List<ParkinglistDTO> getTodayAll(int memberNo,int state,String coupon) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
-		map.put("state", type);
+		map.put("state", state);
 		map.put("coupon", coupon);
-		
 		return sqlSession.selectList("mybatis.parkinglistMapper.getTodayAll", map);
 	}
 	

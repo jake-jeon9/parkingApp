@@ -11,6 +11,7 @@ public class AgencyDAO {
 
 	@Autowired
 	SqlSessionTemplate sqlSession;
+	
 	public int agencyInsert(AgencyDTO agencyDTO) {
 		return sqlSession.insert("mybatis.agencyMapper.agencyInsert", agencyDTO);
 	}
