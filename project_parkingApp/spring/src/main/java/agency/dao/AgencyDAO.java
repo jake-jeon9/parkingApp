@@ -35,8 +35,11 @@ public class AgencyDAO {
 		return sqlSession.update("mybatis.agencyMapper.agencyExtension", map);
 	}
 	
-	public List<AgencyDTO> agencySelect(int memberNo) {
-		return sqlSession.selectList("mybatis.agencyMapper.agencySelect", memberNo);
+	public List<AgencyDTO> agencySelect(int memberNo,int type) {
+		HashMap<String,Integer> map = new HashMap<>();
+		map.put("memberNo",memberNo);
+		map.put("type",type);
+		return sqlSession.selectList("mybatis.agencyMapper.agencySelect", map);
 	}
 	public String agencySelectSearchName(String nameOfAgency,int memberNo){
 		HashMap<String,Object> map =new HashMap<>();

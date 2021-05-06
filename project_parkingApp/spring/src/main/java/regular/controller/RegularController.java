@@ -25,8 +25,13 @@ public class RegularController {
 		System.out.println("-- 함수 실행 : regular_insert.do --");
 		request.setCharacterEncoding("UTF-8");
 
-		String regularRT = getResult(insertregular(request));
-
+		String regularRT = "FAIL";
+		boolean check = checkAgency(request);
+		if(check) {
+			regularRT = getResult(insertregular(request));
+		}else {
+			regularRT = "이미 등록 됨";
+		}
 		JSONObject json = new JSONObject();
 		json.put("regularRT", regularRT);
 
@@ -66,7 +71,9 @@ public class RegularController {
 		request.setCharacterEncoding("UTF-8");
 		String RT = "FAIL";
 		int memberNo = convert(request.getParameter("memberNo"));
-		List<RegularDTO> list = regularService.regularSelect(memberNo);
+		int type = convert(request.getParameter("type"));
+		
+		List<RegularDTO> list = regularService.regularSelect(memberNo,type);
 		JSONObject json = new JSONObject();
 		
 		if(list != null) {
@@ -74,7 +81,18 @@ public class RegularController {
 			JSONArray regularList = new JSONArray();
 			int size = list.size();
 			for(RegularDTO regularDTO : list) {
-				regularList.put(regularDTO);
+				JSONObject temp = new JSONObject();
+				temp.put("regularNo", regularDTO.getRegularNo());
+				temp.put("plateNumOfCar", regularDTO.getPlateNumOfCar());
+				temp.put("guestName", regularDTO.getGuestName());
+				temp.put("guestContect", regularDTO.getGuestContact());
+				temp.put("issueOfDate", regularDTO.getIssueOfDate());
+				temp.put("expireOfDate", regularDTO.getExpireOfDate());
+				temp.put("countOfextend", regularDTO.getCountOfextend());
+				temp.put("paid", regularDTO.getPaid());
+				temp.put("usedCount", regularDTO.getUsedCount());
+				temp.put("reg_date", regularDTO.getReg_date());
+				regularList.put(temp);
 			}
 			json.put("regularList", regularList);
 			json.put("size", size);
@@ -83,7 +101,74 @@ public class RegularController {
 		System.out.println("-- 함수 종료 : regular_Select.do --");
 		return modelAndView(json);
 	}
+	
 
+	@RequestMapping(value = "/regular/regular_updateUsedcount.do")
+	public ModelAndView regular_updateUsedcount(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : regular_updateUsedcount.do --");
+		request.setCharacterEncoding("UTF-8");
+		
+		String agencyRT = getResult(updateUsedCount(request));
+		JSONObject json = new JSONObject();
+	    json.put("agencyRT", agencyRT);
+	      
+		System.out.println("-- 함수 종료 : regular_updateUsedcount.do --\n");
+		return modelAndView(json);
+	}
+	
+
+	@RequestMapping(value = "/regular/regular_extension.do")
+	public ModelAndView regularExtension(HttpServletRequest request) throws Exception {
+		System.out.println("-- 함수 실행 : regular_extension.do --");
+		request.setCharacterEncoding("UTF-8");
+		
+		String agencyRT = getResult(extension(request));
+		
+		JSONObject json = new JSONObject();
+	    json.put("agencyRT", agencyRT);
+	      
+		System.out.println("-- 함수 종료 : regular_extension.do --\n");
+		return modelAndView(json);
+	}
+	
+
+	private boolean checkAgency(HttpServletRequest request) {
+		System.out.println("함수 실행 : checkAgency");
+		boolean result = false;
+		String targetName = request.getParameter("plateNumOfCar");
+		int memberNo = convert(request.getParameter("memberNo"));
+		String nameOfAgency = regularService.regularSelectSearchName(targetName,memberNo);
+		if(nameOfAgency == null ) result = true;
+		
+		System.out.println("함수 종료 : checkAgency");
+		return result;
+	}
+
+	private int extension(HttpServletRequest request) {
+		System.out.println("함수 시작 : extension");
+		int result = 0;
+		
+		int regularNo = convert(request.getParameter("regularNo"));
+		int addMonths = convert(request.getParameter("addMonths"));
+		int cost =  convert(request.getParameter("cost"));
+		
+		result =  regularService.regularExtension(regularNo, addMonths, cost);
+		
+		System.out.println("함수 종료 : extension");
+		return result;
+	}
+	
+	private int updateUsedCount(HttpServletRequest request) {
+		System.out.println("함수 시작 : updateUsedCount");
+		int result = 0;
+		
+		int regularNo = convert(request.getParameter("regularNo"));
+		result = regularService.regularUpdate(regularNo);
+
+		System.out.println("함수 종료 : updateUsedCount");
+		return result;
+	}
+		
 	public int insertregular(HttpServletRequest request) {
 		System.out.println("함수 실행 : insertBoard");
 		// 기본 정보
@@ -93,10 +178,6 @@ public class RegularController {
 		String guestContact = request.getParameter("guestContact");
 		String expireOfDate = request.getParameter("expireOfDate");
 		int paid = convert(request.getParameter("paid"));
-//		int usedCount  = convert(request.getParameter("paid"));
-//		String issueOfDate= "sysdate";
-//		int countOfextend = 0;
-//	    int usedCount= 1;
 		
 		// 보드 작성
 		RegularDTO regularDTO = new RegularDTO();
@@ -104,10 +185,8 @@ public class RegularController {
 		regularDTO.setPlateNumOfCar(plateNumOfCar);
 		regularDTO.setGuestName(guestName);
 		regularDTO.setGuestContact(guestContact);
-		//regularDTO.setIssueOfDate(issueOfDate);
 		regularDTO.setExpireOfDate(expireOfDate);
 		regularDTO.setPaid(paid);
-//		regularDTO.setUsedCount(usedCount);
 		
 		int result = regularService.regularInsert(regularDTO);
 		System.out.println("함수 종료 : insertBoard");
@@ -132,11 +211,11 @@ public class RegularController {
 		regularDTO.setPlateNumOfCar(plateNumOfCar);
 		regularDTO.setGuestName(guestName);
 		regularDTO.setGuestContact(guestContact);
-		//regularDTO.setIssueOfDate(issueOfDate);
+		regularDTO.setIssueOfDate(issueOfDate);
 		regularDTO.setExpireOfDate(expireOfDate);
 		regularDTO.setPaid(paid);
 		regularDTO.setUsedCount(usedCount);
-		
+		regularDTO.setCountOfextend(countOfextend);
 		int result = regularService.regularModify(regularDTO);
 	    System.out.println("함수 종료 : modifyRegular");
 		return result;

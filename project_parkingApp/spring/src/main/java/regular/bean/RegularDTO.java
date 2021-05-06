@@ -6,18 +6,19 @@ public class RegularDTO {
 	private String plateNumOfCar;
 	private String guestName;
 	private String guestContact;
-	private int issueOfDate;
+	private String issueOfDate;
 	private String expireOfDate;
-	private String countOfextend;
+	private int countOfextend;
 	private int paid;
 	private int usedCount;
+	private String reg_date;
 	
 	public RegularDTO() {
 		super();
 	}
 	
 	public RegularDTO(int regularNo, int memberNo, String plateNumOfCar, String guestName, String guestContact,
-			int issueOfDate, String expireOfDate, String countOfextend, int paid, int usedCount) {
+			String issueOfDate, String expireOfDate, int countOfextend, int paid, int usedCount, String reg_date) {
 		super();
 		this.regularNo = regularNo;
 		this.memberNo = memberNo;
@@ -29,7 +30,10 @@ public class RegularDTO {
 		this.countOfextend = countOfextend;
 		this.paid = paid;
 		this.usedCount = usedCount;
+		this.reg_date = reg_date;
 	}
+
+
 
 	public int getRegularNo() {
 		return regularNo;
@@ -71,11 +75,11 @@ public class RegularDTO {
 		this.guestContact = guestContact;
 	}
 
-	public int getIssueOfDate() {
+	public String getIssueOfDate() {
 		return issueOfDate;
 	}
 
-	public void setIssueOfDate(int issueOfDate) {
+	public void setIssueOfDate(String issueOfDate) {
 		this.issueOfDate = issueOfDate;
 	}
 
@@ -87,11 +91,11 @@ public class RegularDTO {
 		this.expireOfDate = expireOfDate;
 	}
 
-	public String getCountOfextend() {
+	public int getCountOfextend() {
 		return countOfextend;
 	}
 
-	public void setCountOfextend(String countOfextend) {
+	public void setCountOfextend(int countOfextend) {
 		this.countOfextend = countOfextend;
 	}
 
@@ -111,7 +115,13 @@ public class RegularDTO {
 		this.usedCount = usedCount;
 	}
 
+	public String getReg_date() {
+		return reg_date;
+	}
 
+	public void setReg_date(String reg_date) {
+		this.reg_date = reg_date;
+	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package regular.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -26,8 +27,24 @@ public class RegularDAO {
 	public int regularUpdate(int regularNo) {
 		return sqlSession.update("mybatis.regularMapper.regularUpdate", regularNo);
 	}
-	public List<RegularDTO> regularSelect(int memberNo) {
-		return sqlSession.selectList("mybatis.regularMapper.regularSelect", memberNo);
+	public List<RegularDTO> regularSelect(int memberNo,int type) {
+		HashMap<String,Integer> map = new HashMap<>();
+		map.put("memberNo",memberNo);
+		map.put("type",type);
+		return sqlSession.selectList("mybatis.regularMapper.regularSelect", map);
+	}
+	public String regularSelectSearchName(String plateNumOfCar,int memberNo){
+		HashMap<String,Object> map =new HashMap<>();
+		map.put("plateNumOfCar", plateNumOfCar);
+		map.put("memberNo", memberNo);
+		return sqlSession.selectOne("mybatis.regularMapper.regularSelectSearchName", map);
+	}
+	public int regularExtension(int regularNo,int addMonths,int cost) {
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("regularNo",regularNo);
+		map.put("addMonths",addMonths);
+		map.put("paid",cost);
+		return sqlSession.update("mybatis.regularMapper.regularExtension", map);
 	}
 	
 }

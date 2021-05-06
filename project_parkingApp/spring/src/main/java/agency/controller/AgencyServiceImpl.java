@@ -30,8 +30,8 @@ public class AgencyServiceImpl implements AgencyService{
 	}
 
 	@Override
-	public List<AgencyDTO> agencySelect(int memberNo) {
-		return agencyDAO.agencySelect(memberNo);
+	public List<AgencyDTO> agencySelect(int memberNo,int type) {
+		return agencyDAO.agencySelect(memberNo, type);
 	}
 
 	@Override

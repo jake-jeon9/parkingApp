@@ -11,5 +11,5 @@ public interface AgencyService {
 	public int agencyUpdate(int agencyNo);
 	public int agencyExtension(int agencyNo,int addMonths,int cost);
 	public String agencySelectSearchName(String nameOfAgency, int memberNo);
-	public List<AgencyDTO> agencySelect(int memberNo);
+	public List<AgencyDTO> agencySelect(int memberNo,int type);
 }
