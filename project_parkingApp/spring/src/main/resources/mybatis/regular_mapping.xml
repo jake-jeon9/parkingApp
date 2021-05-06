@@ -13,10 +13,11 @@
 		            #{guestName},
 		            #{guestContact},
 		            sysdate,
-		            add_months(sysdate,#{expireOfDate}),
+		            #{expireOfDate},
 		            0,
 		            #{paid},
-		            0)
+		            0,
+		            sysdate)
 	</insert>
 	<!-- regular modify -->
 	<update id="regularModify" parameterType="regularDTO" >
@@ -26,7 +27,10 @@
 		       guestContact = #{guestContact},
 			   expireOfDate = #{expireOfDate},
 			   countOfextend = #{countOfextend},
-			   paid = #{paid}
+			   issueOfDate = #{issueOfDate},
+			   usedCount = #{usedCount},
+			   paid = #{paid},
+			   reg_date = sysdate
 		WHERE  regularNo = #{regularNo} 
 	</update>
 	
@@ -34,7 +38,16 @@
 	<update id="regularUpdate" parameterType="int" >
 		UPDATE REGULAR 
 		SET 	usedCount = usedCount+1
-		WHERE	regularNo = 2;
+		WHERE	regularNo = #{regularNo}
+	</update>
+	
+		<!-- extend expireDate -->
+	<update id="regularExtension" parameterType="java.util.Map" >
+		UPDATE REGULAR 
+		SET    expireofdate = add_months(to_date(expireofdate),#{addMonths}),
+               paid = paid + #{paid},
+               countOfextend = countOfextend + 1
+        WHERE  regularNo = #{regularNo}
 	</update>
 	
 	<!-- delete regular -->
@@ -44,9 +57,31 @@
 	</delete>
 	
 	<!-- list regular -->
-	<select id="regularSelect" parameterType="int" resultType="regularDTO">
+	<select id="regularSelect" parameterType="java.util.Map" resultType="regularDTO">
 		SELECT * FROM REGULAR
-		WHERE regularNo = #{regularNo}
+		WHERE memberNo = #{memberNo}
+		<choose>
+		<!-- 0은 모든 업체 조회 -->
+		<!-- 1은 현재 유효기간이 남아있는 업체들 --> 
+		<when test="type== 1">
+			AND expireofdate &gt;= TRUNC(SYSDATE,'DD') AND issueOfDate &lt;= sysdate
+		</when>
+		<!-- 유효기간 임박 7일 이내 -->
+		<when test="type == 2">
+			AND expireofdate &gt;= TRUNC(SYSDATE,'DD') AND expireofdate &lt;= sysdate+7
+		</when>
+		<!-- 유효기간이 지난 업체 -->
+		<when test = "type == 3">
+			AND expireofdate &lt; TRUNC(SYSDATE,'DD')
+		</when>
+		</choose>
+		 order by expireofdate
+	</select>
+	
+		
+	<select id="regularSelectSearchName" parameterType="java.util.Map" resultType="String">
+		SELECT plateNumOfCar FROM REGULAR
+		WHERE plateNumOfCar = #{plateNumOfCar} and memberNo = #{memberNo}
 	</select>
 	
 </mapper>

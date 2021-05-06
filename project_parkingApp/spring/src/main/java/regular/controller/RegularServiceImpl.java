@@ -30,13 +30,23 @@ public class RegularServiceImpl implements RegularService {
 	}
 
 	@Override
-	public List<RegularDTO> regularSelect(int memberNo) {
-		return regularDAO.regularSelect(memberNo);
+	public int regularUpdate(int regularNo) {
+		return regularDAO.regularUpdate(regularNo);
 	}
 
 	@Override
-	public int regularUpdate(int regularNo) {
-		return regularDAO.regularUpdate(regularNo);
+	public List<RegularDTO> regularSelect(int memberNo, int type) {
+		return regularDAO.regularSelect(memberNo, type);
+	}
+
+	@Override
+	public String regularSelectSearchName(String plateNumOfCar, int memberNo) {
+		return regularDAO.regularSelectSearchName(plateNumOfCar, memberNo);
+	}
+
+	@Override
+	public int regularExtension(int regularNo, int addMonths, int cost) {
+		return regularDAO.regularExtension(regularNo, addMonths, cost);
 	}
 
 }

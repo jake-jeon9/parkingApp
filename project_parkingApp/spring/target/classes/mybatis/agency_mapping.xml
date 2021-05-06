@@ -47,7 +47,7 @@
 		SET    expireofdate = add_months(to_date(expireofdate),#{addMonths}),
                paid = paid + #{paid},
                countOfextend = countOfextend + 1
-        WHERE  agencyNo = #{agencyNo};
+        WHERE  agencyNo = #{agencyNo}
 	</update>
 	
 	<!-- delete agency -->
@@ -57,9 +57,26 @@
 	</delete>
 	
 	<!-- list agency -->
-	<select id="agencySelect" parameterType="int" resultType="agencyDTO">
-		SELECT * FROM agency
-		WHERE memberNo = #{memberNo}
+	<select id="agencySelect" parameterType="java.util.Map" resultType="agencyDTO">
+		SELECT * FROM agency 
+		WHERE memberNo = #{memberNo}  
+		
+		<choose>
+		<!-- 0은 모든 업체 조회 -->
+		<!-- 1은 현재 유효기간이 남아있는 업체들 --> 
+		<when test="type== 1">
+			AND expireofdate &gt;= TRUNC(SYSDATE,'DD') AND issueOfDate &lt;= sysdate
+		</when>
+		<!-- 유효기간 임박 7일 이내 -->
+		<when test="type == 2">
+			AND expireofdate &gt;= TRUNC(SYSDATE,'DD') AND expireofdate &lt;= sysdate+7
+		</when>
+		<!-- 유효기간이 지난 업체 -->
+		<when test = "type == 3">
+			AND expireofdate &lt; TRUNC(SYSDATE,'DD')
+		</when>
+		</choose>
+		 order by expireofdate
 	</select>
 	
 	<select id="agencySelectSearchName" parameterType="java.util.Map" resultType="String">

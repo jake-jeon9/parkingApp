@@ -9,5 +9,7 @@ public interface RegularService {
 	public int regularModify(RegularDTO regularDTO) ;
 	public int regularDelete(int regularNo) ;
 	public int regularUpdate(int regularNo) ;
-	public List<RegularDTO> regularSelect(int memberNo);
+	public List<RegularDTO> regularSelect(int memberNo,int type);
+	public String regularSelectSearchName(String plateNumOfCar,int memberNo);
+	public int regularExtension(int regularNo,int addMonths,int cost);
 }

@@ -97,19 +97,34 @@ public class AgencyController {
 	}
 	
 	@RequestMapping(value = "/agency/agency_Select.do")
-	public ModelAndView searchKeyword(HttpServletRequest request) throws Exception {
+	public ModelAndView agencySelect(HttpServletRequest request) throws Exception {
 		System.out.println("-- 함수 실행 : agency_Select.do --");
 		request.setCharacterEncoding("UTF-8");
 		String RT = "FAIL";
 		int memberNo = convert(request.getParameter("memberNo"));
-		List<AgencyDTO> list = agencyService.agencySelect(memberNo);
+		int type = convert(request.getParameter("type"));
+		
+		List<AgencyDTO> list = agencyService.agencySelect(memberNo,type);
 		JSONObject json = new JSONObject();
 		if(list != null) {
 			RT = "OK";
 			JSONArray agencyList = new JSONArray();
 			int size = list.size();
 			for(AgencyDTO agencyDTO : list) {
-				agencyList.put(agencyDTO);
+				//agencyList.put(agencyDTO);
+				JSONObject temp = new JSONObject();
+				temp.put("agencyNo",agencyDTO.getAgencyNo());
+				temp.put("nameOfAgency",agencyDTO.getNameOfAgency());
+				temp.put("contactName",agencyDTO.getContactName());
+				temp.put("contactPhone",agencyDTO.getContactPhone());
+				temp.put("issueOfDate",agencyDTO.getIssueOfDate());
+				temp.put("expireOfDate",agencyDTO.getExpireOfDate());
+				temp.put("countOfextend",agencyDTO.getCountOfextend());
+				temp.put("paid",agencyDTO.getPaid());
+				temp.put("usedCount",agencyDTO.getUsedCount());
+				temp.put("reg_date",agencyDTO.getReg_date());
+				agencyList.put(temp);
+				
 			}
 			json.put("agencyList", agencyList);
 			json.put("size", size);
