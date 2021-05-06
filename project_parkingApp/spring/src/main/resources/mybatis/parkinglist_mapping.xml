@@ -71,22 +71,20 @@
 
 	<!-- 페이징 기간 조회  option : 1. in or out 2. coupon true -->
 	<select id = "parkinglistSelect" parameterType="java.util.Map" resultType="parkinglistDTO">
-		<![CDATA[
 		SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon 
-			FROM ( SELECT rownum rn, tt. * 
-				FROM( SELECT * FROM listofparked
-						 WHERE memberNo = #{memberNo} 
-							<if test = "startDate != null">
-								 AND timeOfParked BETWEEN
-								  #{startDate} AND #{endDate}
-		 						<if test="coupon.equals(true)"> 
-		  							 and coupon = #{coupon}'
-		 						</if>
-		 					</if>
-		 				ORDER BY usedNo DESC nulls last)
-		 		 tt)
-		 	WHERE rn>= #{startNum} and rn<= #{endNum}		 				
-		 ]]> 
+		FROM  ( SELECT rownum rn, tt. * 
+		FROM  ( SELECT * FROM listofparked
+			WHERE memberNo = #{memberNo} 
+				<if test = "startDate != null">
+				 AND timeOfParked BETWEEN
+				  #{startDate} AND #{endDate}
+						<if test="coupon.equals(true)"> 
+						 and coupon = #{coupon}'
+ 						</if>
+					</if>
+			ORDER BY usedNo DESC nulls last)
+	 		 tt)
+	 	WHERE rn>= #{startNum} and rn &lt;= #{endNum}		 				
 	</select>
 	
 	
