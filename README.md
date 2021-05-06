@@ -5,7 +5,9 @@
 
 데이터는 firebase를 통해 관리합니다.
 
-현재 ver2 (자체 오라클db구축중입니다)
+버전 ver1 = firebase만 사용
+
+현재 ver2 = 서버 + firebase (자체 오라클db구축중입니다)
 
 this app is parking management app. that made by java and python. also, use openCV and trained_kor.tesseract. this app returns a text of license plate from a image which you took. It works when you take a picture and then openCV read the image then tesseract comvert image to text. but this app has some iusse. that can't interpret big size or something.
 
