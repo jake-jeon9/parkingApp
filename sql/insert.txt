@@ -1,0 +1,75 @@
+
+--데이터 입력
+insert into member VALUES(
+    seq_member.nextval,
+    'jakejeon2',
+    'okay12!',
+    'jakejeon112@gmail.com',
+    '우리주차장',
+    '010-9313-8802',
+    sysdate
+);
+
+
+INSERT INTO COST VALUES(
+    2,
+    DEFAULT,
+    DEFAULT,
+    DEFAULT,
+    DEFAULT,
+    DEFAULT,
+    DEFAULT,
+    DEFAULT,
+    SYSDATE);
+
+
+INSERT INTO REGULAR VALUES(
+    seq_regular.nextval,
+    27,
+    '15허1001',
+    '사병주',
+    '010-9313-8802',
+    to_date('2021-05-03'),
+    to_date('2021-07-05'),
+    1,
+    200000,
+    0,
+    sysdate);
+    
+INSERT INTO Agency VALUES(
+    seq_agency.nextval,
+    27,
+    '빵빵한의원',
+    '김원장님',
+    '010-9313-8802',
+    sysdate,
+    To_date('2021-05-04'),
+    1,
+    200000,
+    0,
+    sysdate
+);
+    
+    
+INSERT INTO listOfparked VALUES(
+    seq_listOfParked.nextval,
+    2,
+    '20도1010',
+    default,
+    default,
+    sysdate,
+    null,
+    default,
+    null
+);
+
+INSERT INTO photo VALUES(
+    photoId.nextval,
+    2,
+    '\storage\2021\04\30\2\',
+    '20주1111',
+    '20주1111',
+    'jpg',
+    5,
+    sysdate
+);

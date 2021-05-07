@@ -1,0 +1,50 @@
+--테이블 조회
+SELECT * FROM MEMBER;
+SELECT * FROM COST;
+SELECT * FROM AGENCY;
+SELECT * FROM listofparked;
+SELECT * FROM regular;
+SELECT * FROM photo;
+
+--회원 주차장별 조회
+SELECT * FROM MEMBER where memberId = 'jakejeon';
+
+-- 요금조회
+SELECT * FROM COST where memberNo = 1;
+
+--agency조회
+SELECT * FROM AGENCY where memberNo =1 and nameofagency = '우리병원';
+SELECT * FROM AGENCY where memberNo =27 order by expireofdate;
+SELECT * FROM AGENCY where memberNo =27 AND expireofdate >=TRUNC(SYSDATE,'DD') and issueOfDate <=sysdate;
+SELECT * FROM AGENCY where memberNo =27 AND expireofdate >=TRUNC(SYSDATE,'DD') AND expireofdate <= sysdate+7 order by expireofdate;
+SELECT * FROM AGENCY where memberNo =27 AND expireofdate < TRUNC(SYSDATE,'DD');
+
+--정기차량 조회
+SELECT * FROM regular where memberNo = 27;
+SELECT * FROM regular where memberNo = 1 and guestname = '이병주';
+SELECT * FROM regular where memberNo =27 order by expireofdate;
+SELECT * FROM regular where memberNo =27 AND expireofdate >=TRUNC(SYSDATE,'DD') and issueOfDate <=sysdate;
+SELECT * FROM regular where memberNo =27 AND expireofdate >=TRUNC(SYSDATE,'DD') AND expireofdate <= sysdate+7 order by expireofdate;
+SELECT * FROM regular where memberNo =27 AND expireofdate < TRUNC(SYSDATE,'DD');
+
+--사진조회
+SELECT * FROM photo where photoId =1;
+SELECT * FROM photo where usedNo =1;
+SELECT * FROM photo where filename = '20주1111';
+
+--주차 현황 조회
+SELECT * FROM listofparked where memberNo =1; -- 총 조회 나중에 페이징 처리할것
+SELECT * FROM listofparked where memberNo =1 and timeofparked = sysdate; -- 오늘
+SELECT * FROM listofparked where memberNo =1 and timeofparked = sysdate and currentofstate = 'in'; -- 오늘 현재 주차
+SELECT * FROM listofparked where memberNo =1 and timeofparked = sysdate and currentofstate = 'out'; -- 오늘 주차가 끝난 상태
+SELECT * FROM listofparked WHERE USEDNO = 2 AND currentOfState = 'in';
+SELECT * FROM listofparked where memberNo =1 and platenumofcar = '10주1111'; -- 특정 차량 조회
+SELECT * FROM listofparked where memberNo =1 AND timeOfParked between TO_CHAR(sysdate,'YYYY-MM-DD')
+AND TO_CHAR( SYSDATE+1,'YYYY-MM-DD'); -- 특정기간조회
+SELECT * FROM listofparked where memberNo =1 AND timeOfParked between '2021-04-01' AND '2021-05-30'; -- 특정기간조회
+
+SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon from 
+    (select rownum rn,tt. *from 
+        (select * from listofparked where currentOfState = 'out' order by usedNo DESC nulls last)
+    tt)
+WHERE rn>=1 and rn<=3;

@@ -14,3 +14,6 @@ this app is parking management app. that made by java and python. also, use open
 data is managed by firebase.
 
 and i am trying to develop it as ver 2. it will use oracle DB and its server.
+
+
+date table : https://www.erdcloud.com/d/wAZzAwG9nMT8TXKRT
