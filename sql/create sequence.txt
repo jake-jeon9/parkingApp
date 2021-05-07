@@ -1,0 +1,6 @@
+-- 시퀀스만들것 회원번호, 정기차량 번호, 에이전시번호, 이용순서
+create sequence seq_member nocycle;
+create sequence seq_regular  nocycle;
+create sequence seq_agency  nocycle;
+create sequence seq_listOfParked  nocycle;
+create sequence photoId  nocycle;

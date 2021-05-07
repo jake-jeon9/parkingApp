@@ -1,0 +1,79 @@
+--주자창고객정보
+create table member ( 
+    memberNo number primary key, --회원번호 시퀀스
+    memberId varchar2(20) unique, -- 회원아이디
+    pw varchar2(20) not null, -- 패스워드
+    email varchar2(30) not null, -- 이메일
+    nameOfParkingArea varchar2(21), -- 주차장이름
+    phone varchar2(13), -- 주차장번호
+    reg_date date -- 등록일
+);
+
+--주차장 비용정보
+create table cost( 
+    memberNo number UNIQUE, --회원번호 시퀀스
+    additionalCost number default 500, --추가비용
+    additionalTiem number default 5, -- 추가비용이 발생하는 기준시간
+    baseCost number default 1000, -- 최초비용
+    baseTime number default 10, -- 최소 시간
+    maxcost number default 20000, -- 일 최대 비용
+    maxtime number default 8, -- 최대비용이 발생하는 기준시간
+    maxArea number default 10, --주차 가능한 최대크기
+    reg_date date -- 등록일
+);
+
+--주자창 정기 주차
+create table regular(
+    regularNo number primary key, -- 고객번호
+    memberNo number not null, -- 주차장 소속
+    plateNumOfCar varchar2(15) UNIQUE, -- 자동차번호
+    guestName varchar2(15) not null, -- 고객 이름
+    guestContact varchar2(15) not null, -- 고객 번호
+    issueOfDate date, -- 등록일
+    expireOfDate date, -- 종료일
+    countOfextend number, -- 연장횟수
+    paid number, -- 지불일
+    usedCount number,-- 이용횟수
+    reg_date date
+);
+  
+--주자창 협력업체
+create table Agency(
+    agencyNo number primary key, -- 에이전시 넘버
+    memberNo number not null, -- 주차장 소속
+    nameOfAgency varchar2(37) not null, -- 에이전시 이름
+    contactName varchar2(20), -- 에이전시 관리자 이름
+    contactPhone  varchar2(20), -- 에이전시 연락처
+    issueOfDate date, -- 시작일
+    expireOfDate date, --종료일
+    countOfextend number, -- 연장횟수
+    paid number, -- 지불비용
+    usedCount number,-- 에이전트 이용횟수
+    reg_date date -- 업데이트날짜
+);
+
+
+--주차장 정보
+create table listOfparked(
+    usedNo number Unique, -- 주차된 번호
+    memberNo number not null, -- 주차장 관리자 번호
+    plateNumOfCar varchar2(9) not null, -- 자동차번호
+    currentOfState varchar2(3) default 'in', -- 현재 주차 상태 in/out
+    timeOfused number default 0, -- 총 주차된 시간 m
+    timeOfParked date, --등록시
+    timeOfOut date,  --  정산 시
+    paid number default 0, -- 비용 계산
+    coupon varchar2(5) -- agency or regular 멤버 여부 .
+);
+
+--입차사진
+create table photo(
+    photoId number primary key,
+    usedNO number not null,
+    dir varchar2(30) not null,
+    fileName varchar2(30),
+    originalName varchar2(30),
+    fileType varchar2(30),
+    fileSize number,
+    reg_date date
+);

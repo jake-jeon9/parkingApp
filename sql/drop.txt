@@ -1,0 +1,7 @@
+--테이블삭제
+drop table member;
+drop table cost;
+drop table regular;
+drop table listOfparked;
+drop table Agency;
+drop table photo;

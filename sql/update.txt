@@ -1,0 +1,50 @@
+
+--업데이트
+UPDATE agency 
+SET nameOfAgency = '변경우리한의원',
+contactName = '변경원장님',
+contactPhone = '010-1234-1234',
+expireOfDate = add_months(to_date(expireOfDate),1),
+countOfextend = countOfextend+1,
+paid = paid + 1000
+WHERE agencyNo = 27;
+
+UPDATE agency 
+SET usedCount = usedCount+1
+WHERE agencyNo = 2;
+
+
+UPDATE REGULAR
+SET plateNumOfCar = '111도1111',
+    guestName = '변경후',
+    guestContact = '010-1234-1234',
+    expireOfDate = add_months(sysdate,1),
+    countOfextend = countOfextend+1,
+    paid = paid+10000
+WHERE regularNo = 3;
+
+UPDATE REGULAR 
+SET usedCount = usedCount+1
+WHERE regularNo = 3;
+
+--멤버 정보수정
+UPDATE MEMBER
+SET PW ='1234',
+    EMAIL = 'JAKEJEON1125@GMAIL.COM',
+    NAMEOFPARKINGAREA = '한솔주자창',
+    PHONE = '010-3333-1111'
+    WHERE MEMBERNO = 5;
+
+--출차 등록
+UPDATE listofparked
+SET currentOfState = 'out',
+    timeOfused = to_number(SYSDATE - timeofparked),
+    timeofOut = SYSDATE,
+    paid =to_number(sysdate - timeofparked) * 100,
+    COUPON = 'false'
+WHERE usedNo = 2 AND currentOfState = 'out';
+
+update agency set expireofdate = add_months(to_date(expireofdate),1),
+                  paid = paid + 200000,
+                  countOfextend = countOfextend + 1
+            where agencyNo = 28;

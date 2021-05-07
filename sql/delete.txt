@@ -1,0 +1,19 @@
+
+--데이터 삭제
+delete from member
+where memberNo = 2;
+
+delete from cost
+where memberNo = 2;
+
+delete from regular
+where regularNo = 1;
+
+delete from agency
+where agencyNo = 1;
+
+delete from listofparked
+where usedNo = 1;
+
+delete from photo
+where photoId = 1;
