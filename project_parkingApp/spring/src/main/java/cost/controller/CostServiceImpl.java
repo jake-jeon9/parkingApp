@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cost.bean.CostDTO;
+import cost.bean.CouponDTO;
 import cost.dao.CostDAO;
 
 @Service
 public class CostServiceImpl implements CostService{
 
-	
 	@Autowired
 	CostDAO costDAO;
 	
@@ -31,6 +31,21 @@ public class CostServiceImpl implements CostService{
 	@Override
 	public CostDTO costSelect(int memberNo) {
 		return costDAO.costSelect(memberNo);
+	}
+
+	@Override
+	public int couponInsert(CouponDTO couponDTO) {
+		return costDAO.couponInsert(couponDTO);
+	}
+
+	@Override
+	public CouponDTO couponSelect(int usedNo) {
+		return costDAO.couponSelect( usedNo);
+	}
+
+	@Override
+	public int couponDelete(int usedNo) {
+		return costDAO.couponDelete(usedNo);
 	}
 
 }

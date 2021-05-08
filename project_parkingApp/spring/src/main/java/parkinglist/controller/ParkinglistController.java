@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import agency.controller.AgencyService;
 import cost.bean.CostDTO;
+import cost.bean.CouponDTO;
 import cost.controller.CostService;
 import parkinglist.bean.ParkinglistDTO;
 import photo.bean.PhotoDTO;
 import photo.controller.PhotoService;
+import regular.controller.RegularService;
 
 @Controller
 public class ParkinglistController {
@@ -35,6 +38,12 @@ public class ParkinglistController {
 	
 	@Autowired
 	CostService costService;
+	
+	@Autowired
+	RegularService regularService;
+	
+	@Autowired
+	AgencyService agencyService;  
 	
 	@RequestMapping(value = "/parkinglist/parkinglist_insert.do")
 	public ModelAndView parkinglistInsert(HttpServletRequest request, MultipartFile photo) throws Exception {
@@ -65,11 +74,15 @@ public class ParkinglistController {
 		request.setCharacterEncoding("UTF-8");
 	    
 		String parkingListRT = "FAIL"; 
+		String countUpRT = "FAIL";
 		
 		parkingListRT = getResult(uploadParkingList(request));
-		 
+		if(parkingListRT.equals("OK")) {
+			countUpRT = getResult(countUp(request));
+		}
 	    JSONObject json = new JSONObject();
 	    json.put("parkingListRT", parkingListRT);
+	    json.put("countUpRT", countUpRT);
 	      
 	    System.out.println("-- 함수 종료 : parkinglist_upload.do --\n");
 	    return modelAndView(json);
@@ -105,6 +118,7 @@ public class ParkinglistController {
 		}
 		JSONObject json = new JSONObject();
 	    json.put("memberRT", memberRT);
+	    json.put("photoRT", photoRT);
 	    System.out.println("-- 함수 종료 : parkinglist_delete.do --\n");
 		return modelAndView(json);
 	}
@@ -244,41 +258,32 @@ public class ParkinglistController {
 	
 	public int uploadParkingList(HttpServletRequest request) {
 		System.out.println("함수 실행 : uploadParkingList");
-		// 기본 정보
 		String currentOfState = request.getParameter("currentOfState");
-		//현재 상태가 out이면 업데이트 불가 이미 출차상태.
 		if(currentOfState.equals("out")) return 0;
 		
 		int usedNo  = convert(request.getParameter("usedNo"));
 		int memberNo  = convert(request.getParameter("memberNo"));
-
 		String timeOfParked = request.getParameter("timeOfParked");
 		String coupon  = request.getParameter("coupon");
 		//여기서 false or memb or a%
+		String timeOfOut  = parkinglistService.getTimeFromServer();
 		
 		int timeOfused =0;
 		int paid = 0;
-		char type = coupon.charAt(0);
 		
-		String timeOfOut  = parkinglistService.getTimeFromServer();
+		char type = coupon.charAt(0);
 		
 		//요금계산
 		CostDTO costDTO = costService.costSelect(memberNo);
 		int[] hh = new int[2];
 		int[] mm = new int[2];
-		
 		hh[0] = Integer.parseInt(timeOfParked.substring(11,13));
 		mm[0] = Integer.parseInt(timeOfParked.substring(14,16));
-
 		hh[1] = Integer.parseInt(timeOfOut.substring(11,13));
 		mm[1] = Integer.parseInt(timeOfOut.substring(14,16));
-		
-		System.out.println("in time :"+hh[0]+"/"+mm[0]);
-		System.out.println("out time :"+hh[1]+"/"+mm[1]);
 		int tm = ((hh[1] - hh[0])*60) +(mm[1]-mm[0]);
 		timeOfused = tm;
 		
-		//맥시멈 시간 초과 
 		if(tm>=(costDTO.getMaxtime()*60)) {
 			paid = costDTO.getMaxcost();
 		}else {
@@ -286,15 +291,10 @@ public class ParkinglistController {
 			int baseTime = costDTO.getBaseTime();
 			int addCost = costDTO.getAdditionalCost();
 			int addTime = costDTO.getAdditionalTiem();
-			//사용시간이 할인 시간시간 이내일경우 0원.
-			System.out.println("baseT :" + baseTime);
-			System.out.println("baseC :" + baseCost);
-			System.out.println("addT :" + addTime);
-			System.out.println("addC :" + addCost);
 			int discount = 0;
+			
 			if(type == 'a') {
 				discount = Integer.parseInt(coupon.substring(1));
-				//agency count up
 			}
 			if(tm<=discount) {
 				paid = 0;
@@ -311,13 +311,7 @@ public class ParkinglistController {
 		}
 		if(type == 'm') {
 			paid = 0;
-			//regular count up
 		}
-		
-		System.out.println("type : "+ type);
-		System.out.println("tm : "+ tm);
-		System.out.println("paid : "+ paid);
-		System.out.println("timeOfused : "+ timeOfused);
 		
 		// 보드 작성
 		ParkinglistDTO parkinglistDTO = new ParkinglistDTO();
@@ -328,6 +322,7 @@ public class ParkinglistController {
 		parkinglistDTO.setCoupon(coupon);
 		
 		int result = parkinglistService.parkinglistUpdate(parkinglistDTO);
+		
 	    System.out.println("함수 종료 : uploadParkingList");
 		return result;
 	}
@@ -441,6 +436,35 @@ public class ParkinglistController {
 		}
 		
 		System.out.println("함수 종료 : deletePhoto");
+		return result;
+	}
+	public int countUp(HttpServletRequest request) {
+		System.out.println("함수 시작 : countUp");
+		int result = 0;
+		
+		int usedNo  = convert(request.getParameter("usedNo"));
+		int memberNo  = convert(request.getParameter("memberNo"));
+		String coupon  = request.getParameter("coupon");
+		String targetName = request.getParameter("targetName");
+		
+		String target_type = "";
+		int targetNo = 0;
+		if(!coupon.equals("false")) {
+			if(coupon.startsWith("mem")) {
+				target_type = "regularNo";
+				targetNo = regularService.regularSelectSearchName(targetName, memberNo).getRegularNo();
+			}else {
+				target_type = "agencyNo";
+				targetNo = agencyService.agencySelectSearchName(targetName, memberNo).getAgencyNo();
+			}
+			
+			CouponDTO couponDTO = new CouponDTO();
+			couponDTO.setMemberNo(memberNo);
+			couponDTO.setUsedNo(usedNo);
+			couponDTO.setTarget_type(target_type);
+			couponDTO.setTargetNo(targetNo);
+			result = costService.couponInsert(couponDTO);
+		}
 		return result;
 	}
 	

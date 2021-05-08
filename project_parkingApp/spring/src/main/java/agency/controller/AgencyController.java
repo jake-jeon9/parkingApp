@@ -139,8 +139,8 @@ public class AgencyController {
 		boolean result = false;
 		String targetName = request.getParameter("nameOfAgency");
 		int memberNo = convert(request.getParameter("memberNo"));
-		String nameOfAgency = agencyService.agencySelectSearchName(targetName,memberNo);
-		if(nameOfAgency == null ) result = true;
+		AgencyDTO agencyDTO = agencyService.agencySelectSearchName(targetName,memberNo);
+		if(agencyDTO == null ) result = true;
 		
 		System.out.println("함수 종료 : checkAgency");
 		return result;

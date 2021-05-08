@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cost.bean.CostDTO;
+import cost.bean.CouponDTO;
 
 
 @Repository
@@ -25,5 +26,16 @@ public class CostDAO {
 	public CostDTO costSelect(int memberNo) {
 		return sqlSession.selectOne("mybatis.costMapper.costSelect", memberNo);
 	}
+	
+	public int couponInsert(CouponDTO couponDTO) {
+		return sqlSession.insert("mybatis.costMapper.couponInsert", couponDTO);
+	}
+	public CouponDTO couponSelect(int usedNo) {
+		return sqlSession.selectOne("mybatis.costMapper.couponSelect", usedNo);
+	}
+	public int couponDelete(int usedNo) {
+		return sqlSession.delete("mybatis.costMapper.couponDelete", usedNo);
+	}
+	
 	
 }

@@ -5,3 +5,4 @@ drop table regular;
 drop table listOfparked;
 drop table Agency;
 drop table photo;
+drop table coupon;

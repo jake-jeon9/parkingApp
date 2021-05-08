@@ -17,3 +17,7 @@ where usedNo = 1;
 
 delete from photo
 where photoId = 1;
+
+
+delete from coupon 
+where usedNo =2;

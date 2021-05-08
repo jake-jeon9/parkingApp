@@ -41,5 +41,25 @@
 		WHERE memberNo = #{memberNo}
 	</select>
 	
+	<!-- 쿠폰 추가 -->
+	<insert id="couponInsert" parameterType="couponDTO" useGeneratedKeys="true" keyColumn="usedNo,memberNo" keyProperty="usedNo,memberNo">
+		INSERT INTO coupon 
+		VALUES  (  #{usedNo},
+				   #{memberNo},
+				   #{tartgetNo},
+				   #{target_type}
+				)
+	</insert>
+	
+	<!-- 쿠폰 삭제 -->
+	<delete id="couponDelete" parameterType="int" >
+		DELETE FROM coupon 
+		WHERE  usedNo = #{usedNo}
+	</delete>
+	<!-- 쿠폰 조회 -->
+	<select id="couponSelect" parameterType="int" resultType="coupontDTO">
+		SELECT * FROM coupon
+		WHERE  usedNo = #{usedNo} 
+	</select>
 	
 </mapper>
