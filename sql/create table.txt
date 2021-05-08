@@ -78,3 +78,10 @@ create table photo(
     fileSize number,
     reg_date date
 );
+--할인 정보
+create table coupon (
+    usedNo number primary key,
+    member number unique,
+    regularNo number,
+    agencyNo number
+);

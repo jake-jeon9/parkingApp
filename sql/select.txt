@@ -5,6 +5,7 @@ SELECT * FROM AGENCY;
 SELECT * FROM listofparked;
 SELECT * FROM regular;
 SELECT * FROM photo;
+select * from coupon;
 
 --회원 주차장별 조회
 SELECT * FROM MEMBER where memberId = 'jakejeon';

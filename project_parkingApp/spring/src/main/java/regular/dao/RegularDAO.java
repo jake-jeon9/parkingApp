@@ -33,7 +33,7 @@ public class RegularDAO {
 		map.put("type",type);
 		return sqlSession.selectList("mybatis.regularMapper.regularSelect", map);
 	}
-	public String regularSelectSearchName(String plateNumOfCar,int memberNo){
+	public RegularDTO regularSelectSearchName(String plateNumOfCar,int memberNo){
 		HashMap<String,Object> map =new HashMap<>();
 		map.put("plateNumOfCar", plateNumOfCar);
 		map.put("memberNo", memberNo);

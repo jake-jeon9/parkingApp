@@ -40,7 +40,7 @@ public class RegularServiceImpl implements RegularService {
 	}
 
 	@Override
-	public String regularSelectSearchName(String plateNumOfCar, int memberNo) {
+	public RegularDTO regularSelectSearchName(String plateNumOfCar, int memberNo) {
 		return regularDAO.regularSelectSearchName(plateNumOfCar, memberNo);
 	}
 

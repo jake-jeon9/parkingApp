@@ -137,8 +137,8 @@ public class RegularController {
 		boolean result = false;
 		String targetName = request.getParameter("plateNumOfCar");
 		int memberNo = convert(request.getParameter("memberNo"));
-		String nameOfAgency = regularService.regularSelectSearchName(targetName,memberNo);
-		if(nameOfAgency == null ) result = true;
+		RegularDTO regularDTO = regularService.regularSelectSearchName(targetName,memberNo);
+		if(regularDTO == null ) result = true;
 		
 		System.out.println("함수 종료 : checkAgency");
 		return result;

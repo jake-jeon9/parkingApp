@@ -79,9 +79,10 @@
 		 order by expireofdate
 	</select>
 	
-	<select id="agencySelectSearchName" parameterType="java.util.Map" resultType="String">
-		SELECT nameOfAgency FROM agency
+	<select id="agencySelectSearchName" parameterType="java.util.Map" resultType="agencyDTO">
+		SELECT * FROM agency
 		WHERE nameOfAgency = #{nameOfAgency} and memberNo = #{memberNo}
+		ORDER BY agencyNo DESC
 	</select>
 	
 	

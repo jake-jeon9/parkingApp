@@ -38,7 +38,7 @@
 	<update id="regularUpdate" parameterType="int" >
 		UPDATE REGULAR 
 		SET 	usedCount = usedCount+1
-		WHERE	regularNo = #{regularNo}
+		WHERE regularNo = #{regularNo}	
 	</update>
 	
 		<!-- extend expireDate -->
@@ -79,9 +79,10 @@
 	</select>
 	
 		
-	<select id="regularSelectSearchName" parameterType="java.util.Map" resultType="String">
-		SELECT plateNumOfCar FROM REGULAR
+	<select id="regularSelectSearchName" parameterType="java.util.Map" resultType="regularDTO">
+		SELECT * FROM REGULAR
 		WHERE plateNumOfCar = #{plateNumOfCar} and memberNo = #{memberNo}
+		ORDER BY regularNo DESC
 	</select>
 	
 </mapper>

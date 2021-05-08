@@ -41,7 +41,7 @@ public class AgencyDAO {
 		map.put("type",type);
 		return sqlSession.selectList("mybatis.agencyMapper.agencySelect", map);
 	}
-	public String agencySelectSearchName(String nameOfAgency,int memberNo){
+	public AgencyDTO agencySelectSearchName(String nameOfAgency,int memberNo){
 		HashMap<String,Object> map =new HashMap<>();
 		map.put("nameOfAgency", nameOfAgency);
 		map.put("memberNo", memberNo);

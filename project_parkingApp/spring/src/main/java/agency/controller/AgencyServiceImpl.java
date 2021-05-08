@@ -40,7 +40,7 @@ public class AgencyServiceImpl implements AgencyService{
 	}
 
 	@Override
-	public String agencySelectSearchName(String nameOfAgency,int memberNo) {
+	public AgencyDTO agencySelectSearchName(String nameOfAgency,int memberNo) {
 		return agencyDAO.agencySelectSearchName(nameOfAgency,memberNo);
 	}
 

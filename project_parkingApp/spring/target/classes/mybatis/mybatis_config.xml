@@ -18,7 +18,8 @@
 		<typeAlias type="photo.bean.PhotoDTO" alias="photoDTO"/>
 		<!-- 정기주차 -->
 		<typeAlias type="regular.bean.RegularDTO" alias="regularDTO"/>
-		
+		<!-- 쿠폰정보-->
+		<typeAlias type="cost.bean.CouponDTO" alias="couponDTO"/>
 	</typeAliases>
 	
 	<!-- sql mapper 설정 -->

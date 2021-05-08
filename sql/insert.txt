@@ -73,3 +73,10 @@ INSERT INTO photo VALUES(
     5,
     sysdate
 );
+
+insert into coupon values(
+    2,
+    2,
+    null,
+    2
+    );
