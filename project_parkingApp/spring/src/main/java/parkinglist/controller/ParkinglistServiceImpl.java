@@ -32,17 +32,29 @@ public class ParkinglistServiceImpl implements ParkinglistService {
 		return parkinglistDAO.parkinglistDelete(usedNo);
 	}
 	@Override
-	public ParkinglistDTO getSpacificitem(int memberNo, String plateNumOfCar) {
-		return parkinglistDAO.getSpacificitem(memberNo, plateNumOfCar);
+	public ParkinglistDTO getSpacificitem(int memberNo, String plateNumOfCar,String state) {
+		return parkinglistDAO.getSpacificitem(memberNo, plateNumOfCar,state);
 	}
 	@Override
-	public List<ParkinglistDTO> getTodayAll(int memberNo, int state, String coupon) {
-		return parkinglistDAO.getTodayAll(memberNo, state, coupon);
+	public List<ParkinglistDTO> getTodayAll(int memberNo, String targetState, String coupon,int startNum,int endNum) {
+		return parkinglistDAO.getTodayAll(memberNo, targetState, coupon,startNum,endNum);
 	}
 	@Override
 	public List<ParkinglistDTO> parkinglistSelect(int memberNo, String startDate, String endDate, String coupon,
 			int startNum, int endNum) {
 		return parkinglistDAO.parkinglistSelect(memberNo, startDate, endDate, coupon, startNum, endNum);
+	}
+	@Override
+	public String getTimeFromServer() {
+		return parkinglistDAO.getTimeFromServer();
+	}
+	@Override
+	public int parkinglistUpdateLink(int usedNo, String photo_link) {
+		return parkinglistDAO.parkinglistUpdateLink(usedNo, photo_link);
+	}
+	@Override
+	public String parkinglistGetPhotoLink(int usedNo) {
+		return parkinglistDAO.parkinglistGetPhotoLink(usedNo);
 	}
 
 	

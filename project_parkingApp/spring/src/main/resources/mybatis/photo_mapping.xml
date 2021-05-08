@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.photoMapper">
 	<!-- 사진 -->
 	<!-- 사진 추가 -->
-	<insert id="photoWrite" parameterType="photoDTO">
+	<insert id="photoWrite" parameterType="photoDTO" useGeneratedKeys="true" keyColumn="usedNo,photoId,fileName" keyProperty="usedNo,photoId,fileName">
 		INSERT INTO photo 
 		VALUES     (photoId.nextval, 
 		           #{usedNo},
@@ -18,10 +18,26 @@
 	</insert>
 
 	<!-- 사진 삭제 -->
-		<delete id="photoDelete" parameterType="int" >
+	<delete id="photoDelete" parameterType="int" >
 		DELETE FROM photo 
-		WHERE  photoId = #{photoId}
+		WHERE  usedNo = #{usedNo}
 	</delete>
+	
+	<select id="photoSelect" parameterType="java.util.Map" resultType="photoDTO">
+		SELECT * FROM photo
+		<where>
+			<if test = "type.equals('fileName')" >
+				fileName = #{fileName}
+			</if>
+			<if test = "type.equals('usedNo')" >
+				usedNo = #{usedNo}
+			</if>
+			<if test = "type.equals('photoId')" >
+				photoId = #{photoId}
+			</if>
+		</where>
+	</select>
+	
 	
 	<!-- 사진조회 by 차량번호 -->
 	<select id="photoSelectS" parameterType="String" resultType="photoDTO">

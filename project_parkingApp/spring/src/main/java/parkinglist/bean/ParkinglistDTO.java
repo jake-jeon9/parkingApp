@@ -10,12 +10,13 @@ public class ParkinglistDTO {
     private String timeOfOut;
     private int paid;
     private String coupon;
+    private String photo_link;
     
 	public ParkinglistDTO() {
 		super();
 	}
 	public ParkinglistDTO(int usedNo, int memberNo, String plateNumOfCar, String currentOfState, int timeOfused,
-			String timeOfParked, String timeOfOut, int paid, String coupon) {
+			String timeOfParked, String timeOfOut, int paid, String coupon, String photo_link) {
 		super();
 		this.usedNo = usedNo;
 		this.memberNo = memberNo;
@@ -26,6 +27,14 @@ public class ParkinglistDTO {
 		this.timeOfOut = timeOfOut;
 		this.paid = paid;
 		this.coupon = coupon;
+		this.photo_link = photo_link;
+	}
+	
+	public String getPhoto_link() {
+		return photo_link;
+	}
+	public void setPhoto_link(String photo_link) {
+		this.photo_link = photo_link;
 	}
 	public int getUsedNo() {
 		return usedNo;
