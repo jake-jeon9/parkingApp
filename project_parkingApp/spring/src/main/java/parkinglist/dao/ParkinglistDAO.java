@@ -31,19 +31,32 @@ public class ParkinglistDAO {
 	public int parkinglistDelete(int usedNo) {
 		return sqlSession.delete("mybatis.parkinglistMapper.parkinglistDelete", usedNo);
 	}
+	public String parkinglistGetPhotoLink(int usedNo) {
+		return sqlSession.selectOne("mybatis.parkinglistMapper.parkinglistGetPhotoLink", usedNo);
+	}
 	
-	public ParkinglistDTO getSpacificitem(int memberNo,String plateNumOfCar) {
+	public int parkinglistUpdateLink(int usedNo,String photo_link) {
+		HashMap<String,Object> map = new HashMap<>();
+		map.put("usedNo",usedNo);
+		map.put("photo_link",photo_link);
+		return sqlSession.delete("mybatis.parkinglistMapper.parkinglistupdateLink", map);
+	}
+	
+	public ParkinglistDTO getSpacificitem(int memberNo,String plateNumOfCar,String state) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
 		map.put("startDate", plateNumOfCar);
+		map.put("state", state);
 		return sqlSession.selectOne("mybatis.parkinglistMapper.getSpacificitem", map);
 	}
 	
-	public List<ParkinglistDTO> getTodayAll(int memberNo,int state,String coupon) {
+	public List<ParkinglistDTO> getTodayAll(int memberNo,String targetState,String coupon, int startNum, int endNum) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
-		map.put("state", state);
+		map.put("state", targetState);
 		map.put("coupon", coupon);
+		map.put("startNum", startNum);
+		map.put("endNum", endNum);
 		return sqlSession.selectList("mybatis.parkinglistMapper.getTodayAll", map);
 	}
 	
@@ -57,6 +70,11 @@ public class ParkinglistDAO {
 		map.put("startNum", startNum);
 		map.put("endNum", endNum);
 		return sqlSession.selectList("mybatis.parkinglistMapper.parkinglistSelect", map);
+	}
+	
+	//서버로 부터 시간얻기
+	public String getTimeFromServer() {
+		return sqlSession.selectOne("mybatis.parkinglistMapper.getTimeFromServer");
 	}
 
 	

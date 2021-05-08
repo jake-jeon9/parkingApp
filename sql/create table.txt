@@ -63,7 +63,8 @@ create table listOfparked(
     timeOfParked date, --등록시
     timeOfOut date,  --  정산 시
     paid number default 0, -- 비용 계산
-    coupon varchar2(5) -- agency or regular 멤버 여부 .
+    coupon varchar2(5), -- agency or regular 멤버 여부 .
+    photo_link varchar2(300)
 );
 
 --입차사진

@@ -23,19 +23,25 @@ public class PhotoServiceImpl implements PhotoService{
 	}
 
 	@Override
-	public PhotoDTO photoSelectByPlateNum(String plateNum) {
-		return photoDAO.photoSelectByPlateNum(plateNum);
+	public PhotoDTO photoSelect(String type, Object item) {
+		return photoDAO.photoSelect(type, item);
 	}
 
-	@Override
-	public PhotoDTO photoSelectByID(int photoId) {
-		return photoDAO.photoSelectByID(photoId);
-	}
-
-	@Override
-	public PhotoDTO photoSelectByParkedId(int usedNo) {
-		return photoDAO.photoSelectByParkedId(usedNo);
-	}
+	
+//	@Override
+//	public PhotoDTO photoSelectByPlateNum(String plateNum) {
+//		return photoDAO.photoSelectByPlateNum(plateNum);
+//	}
+//
+//	@Override
+//	public PhotoDTO photoSelectByID(int photoId) {
+//		return photoDAO.photoSelectByID(photoId);
+//	}
+//
+//	@Override
+//	public PhotoDTO photoSelectByParkedId(int usedNo) {
+//		return photoDAO.photoSelectByParkedId(usedNo);
+//	}
 
 	
 

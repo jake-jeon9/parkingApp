@@ -1,5 +1,7 @@
 package photo.dao;
 
+import java.util.HashMap;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,19 @@ public class PhotoDAO {
 	public int photoDelete(int photoId) {
 		return sqlSession.delete("mybatis.photoMapper.photoDelete", photoId);
 	}
+	public PhotoDTO photoSelect(String type, Object item) {
+		HashMap<String,Object> map = new HashMap<>();
+		if(type.equals("fileName")) {
+			map.put("fileName",item);
+		}else if(type.equals("photoId")) {
+			map.put("photoId",item);
+		}else if(type.equals("usedNo")) {
+			map.put("usedNo",item);
+		}
+		return sqlSession.selectOne("mybatis.photoMapper.photoSelectU", map);
+	}
+	/*
+	 
 	public PhotoDTO photoSelectByPlateNum(String plateNum) {
 		return sqlSession.selectOne("mybatis.photoMapper.photoSelectS", plateNum);
 	}
@@ -29,6 +44,6 @@ public class PhotoDAO {
 	public PhotoDTO photoSelectByParkedId(int usedNo) {
 		return sqlSession.selectOne("mybatis.photoMapper.photoSelectU", usedNo);
 	}
-	
+	 */
 	
 }
