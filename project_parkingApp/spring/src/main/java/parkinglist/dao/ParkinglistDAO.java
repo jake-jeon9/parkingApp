@@ -45,7 +45,7 @@ public class ParkinglistDAO {
 	public ParkinglistDTO getSpacificitem(int memberNo,String plateNumOfCar,String state) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberNo", memberNo);
-		map.put("startDate", plateNumOfCar);
+		map.put("plateNumOfCar", plateNumOfCar);
 		map.put("state", state);
 		return sqlSession.selectOne("mybatis.parkinglistMapper.getSpacificitem", map);
 	}

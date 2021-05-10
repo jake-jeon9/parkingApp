@@ -46,7 +46,7 @@
 		INSERT INTO coupon 
 		VALUES  (  #{usedNo},
 				   #{memberNo},
-				   #{tartgetNo},
+				   #{targetNo},
 				   #{target_type}
 				)
 	</insert>
@@ -57,7 +57,7 @@
 		WHERE  usedNo = #{usedNo}
 	</delete>
 	<!-- 쿠폰 조회 -->
-	<select id="couponSelect" parameterType="int" resultType="coupontDTO">
+	<select id="couponSelect" parameterType="int" resultType="couponDTO">
 		SELECT * FROM coupon
 		WHERE  usedNo = #{usedNo} 
 	</select>

@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.photoMapper">
 	<!-- 사진 -->
 	<!-- 사진 추가 -->
-	<insert id="photoWrite" parameterType="photoDTO" useGeneratedKeys="true" keyColumn="usedNo,photoId,fileName" keyProperty="usedNo,photoId,fileName">
+	<insert id="photoWrite" parameterType="photoDTO" useGeneratedKeys="true" keyColumn="usedNo,photoId" keyProperty="usedNo,photoId">
 		INSERT INTO photo 
 		VALUES     (photoId.nextval, 
 		           #{usedNo},

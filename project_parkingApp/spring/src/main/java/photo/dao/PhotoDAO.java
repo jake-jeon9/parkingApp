@@ -19,8 +19,8 @@ public class PhotoDAO {
 		return sqlSession.insert("mybatis.photoMapper.photoWrite", photoDTO);
 	}
 
-	public int photoDelete(int photoId) {
-		return sqlSession.delete("mybatis.photoMapper.photoDelete", photoId);
+	public int photoDelete(int usedNo) {
+		return sqlSession.delete("mybatis.photoMapper.photoDelete", usedNo);
 	}
 	public PhotoDTO photoSelect(String type, Object item) {
 		HashMap<String,Object> map = new HashMap<>();
