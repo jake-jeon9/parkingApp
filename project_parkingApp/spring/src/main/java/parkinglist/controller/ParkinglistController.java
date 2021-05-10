@@ -194,6 +194,13 @@ public class ParkinglistController {
 				temp.put("paid", parkinglistDTO.getPaid());
 				temp.put("coupon", parkinglistDTO.getCoupon());
 				
+				int usedNo = parkinglistDTO.getUsedNo();
+				PhotoDTO photoDTO = photoService.photoSelect("usedNo", usedNo);
+				String fileName = "/"+photoDTO.getFileName();
+				String date = "/"+parkinglistDTO.getTimeOfParked().substring(0,10);
+				String url = ip+port+"/parker/resources/storage/"+memberNo+date+fileName;
+				temp.put("url", url);
+				
 				parkingList.put(temp);
 			}
 			json.put("parkingList", parkingList);
@@ -210,12 +217,18 @@ public class ParkinglistController {
 		request.setCharacterEncoding("UTF-8");
 		String RT = "FAIL";
 		int memberNo = convert(request.getParameter("memberNo"));
-		String coupon = request.getParameter("coupon");
-		String startDate = request.getParameter("startDate");
-		String endDate = request.getParameter("endDate");
+		String coupon = null;
+		String startDate =null;
+		String endDate = null;
+		int page = 1;
+		//coupon null or use or non-use
+		if(request.getParameter("coupon") != null) coupon = request.getParameter("coupon");
+		if( request.getParameter("startDate") != null) startDate =  request.getParameter("startDate");
+		if(request.getParameter("endDate") != null) endDate = request.getParameter("endDate");
+		if(request.getParameter("page") !=null) page = convert(request.getParameter("page"));
+
 		
 		//페이징
-		int page = convert(request.getParameter("page"));
 		int count = 10;
 		int endNum = page * count; 
 		int startNum = endNum - (count - 1);
@@ -228,7 +241,24 @@ public class ParkinglistController {
 			JSONArray parkingList = new JSONArray();
 			int size = list.size();
 			for(ParkinglistDTO parkinglistDTO : list) {
-				parkingList.put(parkinglistDTO);
+				JSONObject temp = new JSONObject();
+				temp.put("usedNo", parkinglistDTO.getUsedNo());
+				temp.put("plateNumOfCar", parkinglistDTO.getPlateNumOfCar());
+				temp.put("currentOfState", parkinglistDTO.getCurrentOfState());
+				temp.put("timeOfused", parkinglistDTO.getTimeOfused());
+				temp.put("timeOfParked", parkinglistDTO.getTimeOfParked());
+				temp.put("timeOfOut", parkinglistDTO.getTimeOfOut());
+				temp.put("paid", parkinglistDTO.getPaid());
+				temp.put("coupon", parkinglistDTO.getCoupon());
+				
+				int usedNo = parkinglistDTO.getUsedNo();
+				PhotoDTO photoDTO = photoService.photoSelect("usedNo", usedNo);
+				String fileName = "/"+photoDTO.getFileName();
+				String date = "/"+parkinglistDTO.getTimeOfParked().substring(0,10);
+				String url = ip+port+"/parker/resources/storage/"+memberNo+date+fileName;
+				temp.put("url", url);
+				
+				parkingList.put(temp);
 			}
 			json.put("parkingList", parkingList);
 			json.put("size", size);
