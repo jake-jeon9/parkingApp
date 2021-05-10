@@ -28,7 +28,7 @@
 	<select id ="parkinglistGetPhotoLink" parameterType="int" resultType="String">
 		SELECT photo_link
 		FROM listOfparked
-		WHERE usedNo = {usedNo}
+		WHERE usedNo = #{usedNo}
 	</select>
 	<!-- 차량 출차 -->
 	<update id="parkinglistUpdate" parameterType="parkinglistDTO" >
@@ -45,12 +45,12 @@
 	<update id="parkinglistModify" parameterType="parkinglistDTO" >
 		UPDATE listOfparked 
 		SET    plateNumOfCar = #{plateNumOfCar}, 
-			   currentOfState=#{currentOfState},
-			   timeOfused=#{timeOfused},
-			   timeOfOut=#{timeOfOut},
-			   timeOfParked=#{timeOfParked},
-			   paid=#{paid},
-			   coupon=#{coupon},
+			   currentOfState = #{currentOfState},
+			   timeOfused = #{timeOfused},
+			   timeOfOut = to_date(#{timeOfOut},'YYYY-MM-DD HH24:MI:SS'),
+			   timeOfParked = to_date(#{timeOfParked},'YYYY-MM-DD HH24:MI:SS'),
+			   paid = #{paid},
+			   coupon = #{coupon}
 		WHERE  usedNo = #{usedNo} 
 	</update>
 	
@@ -63,10 +63,10 @@
 	
 	<!-- 특정 차량 조회 -->
 	<select id = "getSpacificitem" parameterType="java.util.Map" resultType="parkinglistDTO">
-		SELECT * FROM listofparked
-		WHERE memberNo = #{memberNo} AND platenumofcar = #{platenumofcar}
+		SELECT * FROM listOfparked
+		WHERE memberNo = #{memberNo} AND plateNumOfCar = #{plateNumOfCar}
 		<if test= "state != null">
-			AND currentofstate = #{state}		
+			AND currentOfState = #{state}		
 		</if>
 		ORDER BY usedNo
 	</select>
@@ -76,15 +76,21 @@
 		SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon 
 		FROM ( SELECT rownum rn, tt. *
 		FROM ( SELECT * FROM listofparked
-		WHERE memberNo = #{memberNo} 
+		<where>
+		memberNo = #{memberNo} 
 		AND timeOfParked BETWEEN TRUNC(SYSDATE,'DD') AND TRUNC(SYSDATE,'DD')+1 -(1/24/60)
-		 
-		 <if test="!state.euals('all')"> 
-		  AND currentofstate = #{currentofstate} 
-		 </if>
-		 <if test="!coupon.equals('false')"> 
-		  AND coupon = 'memb' OR 'a%' 
-		 </if>
+		<if test="!state.equals('all')"> 
+	 	 	AND currentOfState = #{state} 
+	 	</if>
+	 	<if test="coupon != null">
+		 	<if test="!coupon.equals('use')"> 
+		  		AND coupon = 'memb' OR coupon like 'a%'  
+		 	</if>
+		 		<if test="coupon.equals('non-use')"> 
+		  		AND coupon = 'false'
+	 		</if>
+ 		</if>
+		 </where>
 		 ORDER BY usedNo DESC nulls last)
 	 		 tt)
 	 	WHERE rn>= #{startNum} and rn &lt;= #{endNum}

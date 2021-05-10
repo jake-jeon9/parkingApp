@@ -30,6 +30,9 @@ import regular.controller.RegularService;
 @Controller
 public class ParkinglistController {
 
+	final String ip = "http://192.168.219.102";
+	final String port = ":8081";
+	
 	@Autowired
 	ParkinglistService parkinglistService;
 	
@@ -144,11 +147,11 @@ public class ParkinglistController {
 			int usedNo = parkinglistDTO.getUsedNo();
 			PhotoDTO photoDTO = photoService.photoSelect("usedNo", usedNo);
 			String fileName = "/"+photoDTO.getFileName();
-			String date = "/"+parkinglistDTO.getTimeOfParked().substring(0,11);
-			String url = "http://192.168.219.102:8081/parker/storage/"+memberNo+date+fileName;
+			String date = "/"+parkinglistDTO.getTimeOfParked().substring(0,10);
+			String url = ip+port+"/parker/resources/storage/"+memberNo+date+fileName;
 
-			
 			json.put("parkinglistDTO", parkinglistDTO);
+			json.put("url", url);
 		}
 		json.put("RT", itemRT);
 		System.out.println("-- 함수 종료 : searchSpacifictItem.do --");
@@ -162,10 +165,13 @@ public class ParkinglistController {
 		String RT = "FAIL";
 		int memberNo = convert(request.getParameter("memberNo"));
 		String targetState = request.getParameter("state"); // all(전체), in(주차중), out(정산한)
-		String coupon =request.getParameter("coupon");
+		String coupon = null;
+		if(request.getParameter("coupon") != null) coupon = request.getParameter("coupon"); // null =all , use = coupon 사용자 , non-use : 쿠폰미사용
 		
 		//페이징
-		int page = convert(request.getParameter("page"));
+		int page = 1;
+		if(request.getParameter("page") != null)page = convert(request.getParameter("page"));
+		
 		int count = 10;
 		int endNum = page * count; 
 		int startNum = endNum - (count - 1);
@@ -282,6 +288,10 @@ public class ParkinglistController {
 		hh[1] = Integer.parseInt(timeOfOut.substring(11,13));
 		mm[1] = Integer.parseInt(timeOfOut.substring(14,16));
 		int tm = ((hh[1] - hh[0])*60) +(mm[1]-mm[0]);
+		
+		if(tm<0) {//하루초과
+			timeOfused = 60*24 +1;	
+		}
 		timeOfused = tm;
 		
 		if(tm>=(costDTO.getMaxtime()*60)) {
@@ -423,17 +433,17 @@ public class ParkinglistController {
 	private int deletePhoto(HttpServletRequest request) {
 		System.out.println("함수 실행 : deletePhoto");
 		int usedNo = convert(request.getParameter("usedNo"));
-		String dir = parkinglistService.parkinglistGetPhotoLink(usedNo);
+		//String dir = parkinglistService.parkinglistGetPhotoLink(usedNo).replaceAll("\"","/");
 		
 		int result = photoService.photoDelete(usedNo);
 		
 //		실제 폴더에서 삭제
-		if(result== 0) return 0;
-		
-		File file = new File(dir);
-		if(file.exists()) {
-			file.delete();
-		}
+//		if(result== 0) return 0;
+//		
+//		File file = new File(dir);
+//		if(file.exists()) {
+//			file.delete();
+//		}
 		
 		System.out.println("함수 종료 : deletePhoto");
 		return result;
@@ -445,25 +455,31 @@ public class ParkinglistController {
 		int usedNo  = convert(request.getParameter("usedNo"));
 		int memberNo  = convert(request.getParameter("memberNo"));
 		String coupon  = request.getParameter("coupon");
-		String targetName = request.getParameter("targetName");
+		String plateNumOfCar= request.getParameter("plateNumOfCar"); 
 		
 		String target_type = "";
 		int targetNo = 0;
+		int up = 0;
 		if(!coupon.equals("false")) {
 			if(coupon.startsWith("mem")) {
 				target_type = "regularNo";
-				targetNo = regularService.regularSelectSearchName(targetName, memberNo).getRegularNo();
+				targetNo = regularService.regularSelectSearchName(plateNumOfCar, memberNo).getRegularNo();
+				up = regularService.regularUpdate(targetNo);
 			}else {
+				String targetName = request.getParameter("targetName");
 				target_type = "agencyNo";
 				targetNo = agencyService.agencySelectSearchName(targetName, memberNo).getAgencyNo();
+				up = agencyService.agencyUpdate(targetNo);
+			}
+			if(up>0) {
+				CouponDTO couponDTO = new CouponDTO();
+				couponDTO.setMemberNo(memberNo);
+				couponDTO.setUsedNo(usedNo);
+				couponDTO.setTarget_type(target_type);
+				couponDTO.setTargetNo(targetNo);
+				result = costService.couponInsert(couponDTO);
 			}
 			
-			CouponDTO couponDTO = new CouponDTO();
-			couponDTO.setMemberNo(memberNo);
-			couponDTO.setUsedNo(usedNo);
-			couponDTO.setTarget_type(target_type);
-			couponDTO.setTargetNo(targetNo);
-			result = costService.couponInsert(couponDTO);
 		}
 		return result;
 	}
