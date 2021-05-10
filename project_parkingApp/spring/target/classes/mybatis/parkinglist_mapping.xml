@@ -101,16 +101,21 @@
 		SELECT usedNo,memberNo,plateNumOfCar,currentOfState,timeOfused,timeOfParked,timeOfOut,paid,coupon 
 		FROM  ( SELECT rownum rn, tt. * 
 		FROM  ( SELECT * FROM listofparked
-			WHERE memberNo = #{memberNo} 
-			<where>
-				<if test = "startDate != null">
+		<where>
+		 memberNo = #{memberNo} 
+			<if test = "startDate != null">
 				AND timeOfParked 
-				 BETWEEN #{startDate} AND #{endDate}
-				 </if>
-				<if test="!coupon.equals('false')"> 
-				AND coupon = 'memb' OR 'a%' 
-				</if>			
-			</where>
+				BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="coupon != null">
+			 	<if test="!coupon.equals('use')"> 
+			  		AND coupon = 'memb' OR coupon like 'a%'  
+			 	</if>
+		 		<if test="coupon.equals('non-use')"> 
+			  		AND coupon = 'false'
+		 		</if>
+ 			</if>		
+		</where>
 			ORDER BY usedNo DESC nulls last)
 	 		 tt)
 	 	WHERE rn>= #{startNum} and rn &lt;= #{endNum}		 				
