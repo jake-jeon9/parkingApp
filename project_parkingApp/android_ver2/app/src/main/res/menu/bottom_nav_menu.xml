@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_Home"
+        android:title="메인화면" />
+
+    <item
+        android:id="@+id/navigation_InAndOut"
+        android:title="입/출차관리" />
+
+    <item
+        android:id="@+id/navigation_List"
+        android:title="정산" />
+
+    <item
+        android:id="@+id/navigation_Set"
+        android:title="관리" />
+
+</menu>

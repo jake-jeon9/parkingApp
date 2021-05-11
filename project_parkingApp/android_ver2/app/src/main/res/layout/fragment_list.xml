@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="678sp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".Fragment.ListFragment">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="정산"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+    <TextView
+        android:id="@+id/textViewEnrollDate"
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:gravity="end" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="80sp"
+            android:layout_height="match_parent"
+            android:gravity="center|center_horizontal"
+            android:text="기간 선택"
+            android:textAlignment="center" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="오늘" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="이번주" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="이번달" />
+
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="기타" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/etc1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView101"
+            android:layout_width="80sp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="정산 시작일" />
+
+        <EditText
+            android:id="@+id/editTextStartOfDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:enabled="false"
+            android:hint="ex)2020-02-01"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/buttonSelect1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/etc2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView102"
+            android:layout_width="80sp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="정산 종료일" />
+
+
+        <EditText
+            android:id="@+id/editTextEndOfDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:enabled="false"
+            android:hint="ex)2020-02-01"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/buttonSelect2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewSelectedDate"
+        android:layout_width="match_parent"
+        android:gravity="center"
+
+        android:layout_height="40sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="80sp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="주차일"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="차량번호"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/totalParkedTime"
+            android:layout_width="80sp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="총주차시간"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/paid"
+            android:layout_width="60sp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="정산금액"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/etc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="비고"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="250sp">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleViewOfRowAccount"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        app:stackFromEnd="false"
+        tools:listitem="@layout/row_account" />
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 주차대수 : "
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/textViewTotalCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView151"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 정산비용 : "
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/textViewTotalAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonApply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="적용" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
