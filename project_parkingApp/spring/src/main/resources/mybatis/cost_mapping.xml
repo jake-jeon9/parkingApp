@@ -62,4 +62,5 @@
 		WHERE  usedNo = #{usedNo} 
 	</select>
 	
+	
 </mapper>
