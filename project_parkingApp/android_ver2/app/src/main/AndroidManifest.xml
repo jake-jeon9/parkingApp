@@ -23,7 +23,7 @@
         <activity android:name=".setting.S_agencyActivity" />
         <activity android:name=".setting.S_parkingAreaActivity" />
         <activity android:name=".setting.S_costActivity" />
-        <activity android:name=".MainTessa" />
+        <!--<activity android:name=".MainTessa" />-->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
