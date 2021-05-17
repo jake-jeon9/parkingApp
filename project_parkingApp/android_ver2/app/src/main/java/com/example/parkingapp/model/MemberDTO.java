@@ -1,85 +1,80 @@
 package com.example.parkingapp.model;
 
 public class MemberDTO {
-    String plateNumber,enrollDate,startDate,expiredDate,memberName,memberPhone,comment;
-    int usedCount;
+    private int memberNo;
+    private String memberId;
+    private String email;
+    private String pw;
+    private String nameOfParkingSpace;
+    private String phone;
+    private String reg_date;
 
     public MemberDTO() {
-
     }
 
-    public MemberDTO(String plateNumber, String enrollDate, String startDate, String expiredDate, String memberName, String memberPhone, String comment, int usedCount) {
-        this.plateNumber = plateNumber;
-        this.enrollDate = enrollDate;
-        this.startDate = startDate;
-        this.expiredDate = expiredDate;
-        this.memberName = memberName;
-        this.memberPhone = memberPhone;
-        this.comment = comment;
-        this.usedCount = usedCount;
+    public MemberDTO(int memberNo, String memberId, String email, String pw, String nameOfParkingSpace, String phone, String reg_date) {
+        this.memberNo = memberNo;
+        this.memberId = memberId;
+        this.email = email;
+        this.pw = pw;
+        this.nameOfParkingSpace = nameOfParkingSpace;
+        this.phone = phone;
+        this.reg_date = reg_date;
     }
 
-    public String getPlateNumber() {
-        return plateNumber;
+    public int getMemberNo() {
+        return memberNo;
     }
 
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
+    public void setMemberNo(int memberNo) {
+        this.memberNo = memberNo;
     }
 
-    public String getEnrollDate() {
-        return enrollDate;
+    public String getMemberId() {
+        return memberId;
     }
 
-    public void setEnrollDate(String enrollDate) {
-        this.enrollDate = enrollDate;
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getEmail() {
+        return email;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getExpiredDate() {
-        return expiredDate;
+    public String getPw() {
+        return pw;
     }
 
-    public void setExpiredDate(String expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setPw(String pw) {
+        this.pw = pw;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getNameOfParkingSpace() {
+        return nameOfParkingSpace;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setNameOfParkingSpace(String nameOfParkingSpace) {
+        this.nameOfParkingSpace = nameOfParkingSpace;
     }
 
-    public String getMemberPhone() {
-        return memberPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setMemberPhone(String memberPhone) {
-        this.memberPhone = memberPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getComment() {
-        return comment;
+    public String getReg_date() {
+        return reg_date;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getUsedCount() {
-        return usedCount;
-    }
-
-    public void setUsedCount(int usedCount) {
-        this.usedCount = usedCount;
+    public void setReg_date(String reg_date) {
+        this.reg_date = reg_date;
     }
 }

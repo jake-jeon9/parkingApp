@@ -17,10 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -40,7 +38,6 @@ import com.bumptech.glide.Glide;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
-import com.example.parkingapp.MainActivity;
 import com.example.parkingapp.ParkedListActivity;
 import com.example.parkingapp.R;
 import com.example.parkingapp.helper.ConvertDateHelper;
@@ -48,9 +45,8 @@ import com.example.parkingapp.helper.DateTimeHelper;
 import com.example.parkingapp.helper.FileUtils;
 import com.example.parkingapp.helper.PhotoHelper;
 import com.example.parkingapp.helper.ProgressDialogHelper;
-import com.example.parkingapp.model.DailyData;
 import com.example.parkingapp.model.MemberDTO;
-import com.example.parkingapp.model.MetaDTO;
+import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.ParkedDTO;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,17 +61,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
-import org.checkerframework.checker.nullness.compatqual.NullableType;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -108,7 +100,7 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
     Uri image_rui = null;
 
     TessBaseAPI tessBaseAPI;
-    MetaDTO metaDTO;
+    CostDTO costDTO;
     ParkedDTO parkedDTO;
     MemberDTO memberDTO;
     long expectCost = 0;
@@ -167,7 +159,7 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
         firebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                metaDTO = snapshot.getValue(MetaDTO.class);
+                costDTO = snapshot.getValue(CostDTO.class);
             }
 
             @Override
@@ -517,7 +509,7 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
                     break;
 
                 case 200:
-                    metaDTO = (MetaDTO) data.getSerializableExtra("metaDTO");
+                    costDTO = (CostDTO) data.getSerializableExtra("metaDTO");
                     parkedDTO = (ParkedDTO) data.getSerializableExtra("parkedDTO");
                     plateOfNumber = parkedDTO.getPlateNumber();
                     edplateOfNumber.setText(parkedDTO.getPlateNumber());
@@ -539,12 +531,12 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
                     edtotalTime.setText(gepTime);
 
 
-                    if (calTime < metaDTO.getBaseTime()) {
-                        expectCost = metaDTO.getBaseCost();
-                    } else if (calTime >= metaDTO.getFlatTime() * 60) {
-                        expectCost = metaDTO.getFlatCost();
+                    if (calTime < costDTO.getBaseTime()) {
+                        expectCost = costDTO.getBaseCost();
+                    } else if (calTime >= costDTO.getFlatTime() * 60) {
+                        expectCost = costDTO.getFlatCost();
                     } else {
-                        expectCost = ((calTime - metaDTO.getBaseTime()) / metaDTO.getAdditionalTime() * metaDTO.getAdditionalCost()) + metaDTO.getBaseCost();
+                        expectCost = ((calTime - costDTO.getBaseTime()) / costDTO.getAdditionalTime() * costDTO.getAdditionalCost()) + costDTO.getBaseCost();
                     }
 
                     edprice.setText(expectCost + "원");

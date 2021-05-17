@@ -2,7 +2,6 @@ package com.example.parkingapp.setting;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.parkingapp.R;
 import com.example.parkingapp.helper.ProgressDialogHelper;
-import com.example.parkingapp.model.MetaDTO;
+import com.example.parkingapp.model.CostDTO;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -61,16 +60,16 @@ public class S_costActivity extends AppCompatActivity implements View.OnClickLis
         firebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MetaDTO metaDTO = snapshot.getValue(MetaDTO.class);
+                CostDTO costDTO = snapshot.getValue(CostDTO.class);
                 //Log.d("[test]",snapshot.getRef()+".");
-                editTextbasetime.setText(metaDTO.getBaseTime() + "");
-                editTextbasecost.setText(metaDTO.getBaseCost() + "");
-                editTextAdditionalTime.setText(metaDTO.getAdditionalTime() + "");
-                editTextAdditionalCost.setText(metaDTO.getAdditionalCost() + "");
-                editTextFlatTime.setText(metaDTO.getFlatTime() + "");
-                editTextFlatLate.setText(metaDTO.getFlatCost() + "");
-                monthCost = metaDTO.getMonthCost();
-                maxArea = metaDTO.getMaxArea();
+                editTextbasetime.setText(costDTO.getBaseTime() + "");
+                editTextbasecost.setText(costDTO.getBaseCost() + "");
+                editTextAdditionalTime.setText(costDTO.getAdditionalTime() + "");
+                editTextAdditionalCost.setText(costDTO.getAdditionalCost() + "");
+                editTextFlatTime.setText(costDTO.getFlatTime() + "");
+                editTextFlatLate.setText(costDTO.getFlatCost() + "");
+                monthCost = costDTO.getMonthCost();
+                maxArea = costDTO.getMaxArea();
                 ProgressDialogHelper.getInstance().removeProgressbar();
             }
 

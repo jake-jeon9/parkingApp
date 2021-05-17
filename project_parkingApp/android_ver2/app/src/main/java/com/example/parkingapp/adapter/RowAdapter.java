@@ -2,23 +2,20 @@ package com.example.parkingapp.adapter;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.parkingapp.R;
-import com.example.parkingapp.model.MetaDTO;
+import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.ParkedDTO;
 
 import java.util.List;
@@ -29,7 +26,7 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
     Context context;
 
     private List<ParkedDTO> parkedList;
-    MetaDTO metaDTO;
+    CostDTO costDTO;
 
     RadioGroup radioGroup;
     AdapterView.OnItemClickListener onItemClickListener;
@@ -41,10 +38,10 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         return radioButton;
     }
 
-    public RowAdapter(Context context, List<ParkedDTO> parkedList, MetaDTO metaDTO, RadioGroup radioGroup) {
+    public RowAdapter(Context context, List<ParkedDTO> parkedList, CostDTO costDTO, RadioGroup radioGroup) {
         this.context = context;
         this.parkedList = parkedList;
-        this.metaDTO = metaDTO;
+        this.costDTO = costDTO;
         this.radioGroup = radioGroup;
     }
 
@@ -87,15 +84,15 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         long expectCost = 0;
 
         //Log.d("[test]","caltime? " + calTime);
-        if (calTime < metaDTO.getBaseTime()){
-            expectCost = metaDTO.getBaseCost();
+        if (calTime < costDTO.getBaseTime()){
+            expectCost = costDTO.getBaseCost();
             //Log.d("[test]","기본요금");
-        }else if( calTime >= metaDTO.getFlatTime()*60 ){
-            expectCost = metaDTO.getFlatCost();
+        }else if( calTime >= costDTO.getFlatTime()*60 ){
+            expectCost = costDTO.getFlatCost();
             //Log.d("[test]","정액요금");
         }else{
             //Log.d("[test]","일반요금");
-            expectCost = ((calTime-metaDTO.getBaseTime())/metaDTO.getAdditionalTime() * metaDTO.getAdditionalCost()) + metaDTO.getBaseCost();
+            expectCost = ((calTime- costDTO.getBaseTime())/ costDTO.getAdditionalTime() * costDTO.getAdditionalCost()) + costDTO.getBaseCost();
         }
 
         holder.textViewPlateOfNum.setText(plateOfNumber);
