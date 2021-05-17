@@ -1,6 +1,7 @@
 package com.example.parkingapp.model;
 
 public class DailyData {
+    //화면에 표시할 meta 데이터
     long totalAccount, totalParked, currentUsed;
 
     public DailyData(long totalAccount, long totalParked, long currentUsed) {

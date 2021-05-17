@@ -1,11 +1,12 @@
 package com.example.parkingapp.model;
 
-public class AgencyDTO {
-    private int agencyNo;
+public class RegularDTO {
+
+    private int regularNo;
     private int memberNo;
-    private String nameOfAgency;
-    private String contactName;
-    private String contactPhone;
+    private String plateNumOfCar;
+    private String guestName;
+    private String guestContact;
     private String issueOfDate;
     private String expireOfDate;
     private int countOfextend;
@@ -13,15 +14,15 @@ public class AgencyDTO {
     private int usedCount;
     private String reg_date;
 
-    public AgencyDTO() {
+    public RegularDTO() {
     }
 
-    public AgencyDTO(int agencyNo, int memberNo, String nameOfAgency, String contactName, String contactPhone, String issueOfDate, String expireOfDate, int countOfextend, int paid, int usedCount, String reg_date) {
-        this.agencyNo = agencyNo;
+    public RegularDTO(int regularNo, int memberNo, String plateNumOfCar, String guestName, String guestContact, String issueOfDate, String expireOfDate, int countOfextend, int paid, int usedCount, String reg_date) {
+        this.regularNo = regularNo;
         this.memberNo = memberNo;
-        this.nameOfAgency = nameOfAgency;
-        this.contactName = contactName;
-        this.contactPhone = contactPhone;
+        this.plateNumOfCar = plateNumOfCar;
+        this.guestName = guestName;
+        this.guestContact = guestContact;
         this.issueOfDate = issueOfDate;
         this.expireOfDate = expireOfDate;
         this.countOfextend = countOfextend;
@@ -30,12 +31,12 @@ public class AgencyDTO {
         this.reg_date = reg_date;
     }
 
-    public int getAgencyNo() {
-        return agencyNo;
+    public int getRegularNo() {
+        return regularNo;
     }
 
-    public void setAgencyNo(int agencyNo) {
-        this.agencyNo = agencyNo;
+    public void setRegularNo(int regularNo) {
+        this.regularNo = regularNo;
     }
 
     public int getMemberNo() {
@@ -46,28 +47,28 @@ public class AgencyDTO {
         this.memberNo = memberNo;
     }
 
-    public String getNameOfAgency() {
-        return nameOfAgency;
+    public String getPlateNumOfCar() {
+        return plateNumOfCar;
     }
 
-    public void setNameOfAgency(String nameOfAgency) {
-        this.nameOfAgency = nameOfAgency;
+    public void setPlateNumOfCar(String plateNumOfCar) {
+        this.plateNumOfCar = plateNumOfCar;
     }
 
-    public String getContactName() {
-        return contactName;
+    public String getGuestName() {
+        return guestName;
     }
 
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 
-    public String getContactPhone() {
-        return contactPhone;
+    public String getGuestContact() {
+        return guestContact;
     }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
+    public void setGuestContact(String guestContact) {
+        this.guestContact = guestContact;
     }
 
     public String getIssueOfDate() {

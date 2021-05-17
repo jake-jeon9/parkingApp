@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.parkingapp.Fragment.InAndOutFragment;
 import com.example.parkingapp.adapter.RowAdapter;
 import com.example.parkingapp.helper.ConvertDateHelper;
 import com.example.parkingapp.helper.ProgressDialogHelper;
-import com.example.parkingapp.model.MetaDTO;
+import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.ParkedDTO;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +49,7 @@ public class ParkedListActivity extends AppCompatActivity implements View.OnClic
     int selectedNumber = -1;
 
     int YEAR, MONTH, DAY;
-    MetaDTO metaDTO;
+    CostDTO costDTO;
 
 
     @Override
@@ -90,7 +88,7 @@ public class ParkedListActivity extends AppCompatActivity implements View.OnClic
         firebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                metaDTO = snapshot.getValue(MetaDTO.class);
+                costDTO = snapshot.getValue(CostDTO.class);
             }
 
             @Override
@@ -136,7 +134,7 @@ public class ParkedListActivity extends AppCompatActivity implements View.OnClic
                                 }
                                 parkedList.add(parkedDTO);
                                 //Log.d("[test]","리스트 사이즈?"+parkedList.size());
-                                rowAdapter = new RowAdapter(context, parkedList, metaDTO, radioGroup);
+                                rowAdapter = new RowAdapter(context, parkedList, costDTO, radioGroup);
 
                                 rowAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
@@ -207,7 +205,7 @@ public class ParkedListActivity extends AppCompatActivity implements View.OnClic
                 Intent intent = new Intent();
                 //intent.putExtra("plateOfNumplateOfNum",plateOfNum);
                 intent.putExtra("parkedDTO",parkedDTO);
-                intent.putExtra("metaDTO",metaDTO);
+                intent.putExtra("metaDTO", costDTO);
                 setResult(RESULT_OK,intent);
                 finish();
             }

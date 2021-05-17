@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,7 @@ import com.example.parkingapp.helper.ConvertDateHelper;
 import com.example.parkingapp.helper.DateTimeHelper;
 import com.example.parkingapp.helper.ProgressDialogHelper;
 import com.example.parkingapp.model.DailyData;
-import com.example.parkingapp.model.MetaDTO;
+import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.ParkedDTO;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -227,9 +226,9 @@ public class MainFragment extends Fragment {
                 getMeta.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        MetaDTO metaDTO = snapshot.getValue(MetaDTO.class);
-                        totalLot.setText(metaDTO.getMaxArea() + "");
-                        availableLots = "" + (Integer.parseInt(String.valueOf(metaDTO.getMaxArea())) - Integer.parseInt(String.valueOf(usedLot.getText())));
+                        CostDTO costDTO = snapshot.getValue(CostDTO.class);
+                        totalLot.setText(costDTO.getMaxArea() + "");
+                        availableLots = "" + (Integer.parseInt(String.valueOf(costDTO.getMaxArea())) - Integer.parseInt(String.valueOf(usedLot.getText())));
                         availableLot.setText(availableLots);
                         ProgressDialogHelper.getInstance().removeProgressbar();
 

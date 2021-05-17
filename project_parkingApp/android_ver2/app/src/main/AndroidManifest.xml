@@ -17,13 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ParkingApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ParkedListActivity"
+        <activity android:name=".sign.SigninActivity"></activity>
+        <activity
+            android:name=".ParkedListActivity"
             android:label="@string/title_activity_parked_list" />
         <activity android:name=".setting.S_monthActivity" />
         <activity android:name=".setting.S_agencyActivity" />
         <activity android:name=".setting.S_parkingAreaActivity" />
-        <activity android:name=".setting.S_costActivity" />
-        <!--<activity android:name=".MainTessa" />-->
+        <activity android:name=".setting.S_costActivity" /> <!-- <activity android:name=".MainTessa" /> -->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
