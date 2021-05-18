@@ -5,7 +5,7 @@
 <mapper namespace="mybatis.costMapper">
 	<!-- 요금 -->
 	<!-- 요금 추가 -->
-	<insert id="costInsert" parameterType="int" useGeneratedKeys="true" keyColumn="memberNo" keyProperty="memberNo">
+	<insert id="costInsert" >
 		INSERT INTO cost 
 		VALUES  (  #{memberNo},
 		           DEFAULT,

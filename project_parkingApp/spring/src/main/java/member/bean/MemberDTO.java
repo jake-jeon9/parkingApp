@@ -8,15 +8,14 @@ public class MemberDTO {
     private String nameOfParkingArea;
     private String phone;
     private String reg_date;
+    private String device_token;
     
 	public MemberDTO() {
 		super();
 	}
 	
-	
-
 	public MemberDTO(int memberNo, String memberId, String pw, String email, String nameOfParkingArea, String phone,
-			String reg_date) {
+			String reg_date, String device_token) {
 		super();
 		this.memberNo = memberNo;
 		this.memberId = memberId;
@@ -25,9 +24,8 @@ public class MemberDTO {
 		this.nameOfParkingArea = nameOfParkingArea;
 		this.phone = phone;
 		this.reg_date = reg_date;
+		this.device_token = device_token;
 	}
-
-
 
 	public int getMemberNo() {
 		return memberNo;
@@ -84,6 +82,14 @@ public class MemberDTO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-	
+
+	public String getDevice_token() {
+		return device_token;
+	}
+
+	public void setDevice_token(String device_token) {
+		this.device_token = device_token;
+	}
+
     
 }

@@ -5,7 +5,11 @@
 <mapper namespace="mybatis.memberMapper">
 	<!-- member -->
 	<!-- enroll new member   -->
-	<insert id="memberInsert" parameterType="memberDTO" useGeneratedKeys="true" keyColumn="memberNo" keyProperty="memberNo">
+	<insert id="memberInsert" parameterType="memberDTO" >
+	<!-- useGeneratedKeys="true" keyColumn="memberNo" keyProperty="memberNo"  -->
+		<selectKey keyProperty="memberNo" resultType="int" order="AFTER">
+		select memberNo from member where memberId = #{memberId}
+		</selectKey>
 		INSERT INTO member 
 		VALUES     (seq_member.nextval, 
 		            #{memberId}, 
@@ -13,7 +17,9 @@
 		            #{email},
 		            #{nameOfParkingArea},
 		            #{phone},
-		            sysdate)
+		            sysdate,
+		            #{device_token}
+		            )
 	</insert>
 	
 	<!-- member modify -->

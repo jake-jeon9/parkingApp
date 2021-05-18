@@ -20,9 +20,31 @@
 			<url>https://maven.jahia.org/maven2</url>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
-	
+	<!-- pw security 
+	<dependency> 
+	<groupId>org.mindrot</groupId>
+	 <artifactId>jbcrypt</artifactId> 
+	 <version>0.3m</version>
+	  </dependency> -->
+	  <!-- 스프링 시큐리티 적용 구간 -->
+	  <dependency>
+    	<groupId>org.springframework.security</groupId>
+    	<artifactId>spring-security-web</artifactId>
+    	<version>5.1.6.RELEASE</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-core</artifactId>
+	    <version>5.1.6.RELEASE</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-config</artifactId>
+	    <version>5.1.6.RELEASE</version>
+	</dependency>
+
 	
 		<dependency>
 			<groupId>com.oracle</groupId>
@@ -78,7 +100,7 @@
 		<dependency>
 		    <groupId>org.json</groupId>
 		    <artifactId>json</artifactId>
-		    <version>20200518</version>
+		    <version>20210307</version>
 		</dependency>
 		
 		<!-- Spring -->

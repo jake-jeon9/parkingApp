@@ -15,6 +15,7 @@ public class CostDAO {
 	SqlSessionTemplate sqlSession;
 	
 	public int costInsert(int memberNo) {
+		//System.out.println("memberno?"+memberNo);
 		return sqlSession.insert("mybatis.costMapper.costInsert", memberNo);
 	}
 	public int costModify(CostDTO costDTO) {

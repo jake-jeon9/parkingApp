@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,9 @@ public class MemberController {
 	
 	@Autowired
 	CostService costService;
+	
+	@Autowired
+	BCryptPasswordEncoder pwEncoder;
 
 	//회원가입시 아이디 조회
 	@RequestMapping(value = "/member/check_id.do")
@@ -180,6 +184,8 @@ public class MemberController {
 		// 기본 정보
 		String memberId = request.getParameter("memberId");
 		String pw = request.getParameter("pw");
+		pw = pwEncoder.encode(pw);
+		//BCrypt.gensalt()
 		MemberDTO memberDTO = new MemberDTO();
 	    memberDTO.setMemberId(memberId);
 	    memberDTO.setPw(pw);
@@ -202,8 +208,12 @@ public class MemberController {
 		String memberId = request.getParameter("memberId");
 		String email = request.getParameter("email");
 		String pw = request.getParameter("pw");
+		System.out.println("BEFORE pw?" + pw);
+		pw = pwEncoder.encode(pw);
+		System.err.println("AFTER pw?"+pw);
 	    String nameOfParkingArea = request.getParameter("nameOfParkingArea");
 	    String phone = request.getParameter("phone");
+	    String device_token = request.getParameter("device_token");
 	    
 	    //String deviceToken = request.getParameter("deviceToken");
 	    // 멤버 작성
@@ -213,6 +223,7 @@ public class MemberController {
 	    memberDTO.setPw(pw);
 	    memberDTO.setNameOfParkingArea(nameOfParkingArea);
 	    memberDTO.setPhone(phone);
+	    memberDTO.setDevice_token(device_token);
 	    
 	    memberService.memberInsert(memberDTO);
 	    int result = memberDTO.getMemberNo();
@@ -288,6 +299,7 @@ public class MemberController {
 	    modelAndView.setViewName("member.jsp");
 	    return modelAndView;
 	}
-	
+
+
 	
 }
