@@ -10,7 +10,6 @@ public class MemberDTO {
     private String reg_date;
     private String device_token;
     
-    
 	public MemberDTO() {
 		super();
 	}
@@ -25,14 +24,6 @@ public class MemberDTO {
 		this.nameOfParkingArea = nameOfParkingArea;
 		this.phone = phone;
 		this.reg_date = reg_date;
-		this.device_token = device_token;
-	}
-
-	public String getDevice_token() {
-		return device_token;
-	}
-
-	public void setDevice_token(String device_token) {
 		this.device_token = device_token;
 	}
 
@@ -91,6 +82,14 @@ public class MemberDTO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-	
+
+	public String getDevice_token() {
+		return device_token;
+	}
+
+	public void setDevice_token(String device_token) {
+		this.device_token = device_token;
+	}
+
     
 }
