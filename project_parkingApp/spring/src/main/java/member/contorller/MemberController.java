@@ -53,12 +53,11 @@ public class MemberController {
 		String memberRT = "FAIL"; 
 		String costRT = "FAIL";
 		MemberDTO memberDTO = getMyinfo(request);
-		CostDTO costDTO = getMyCostInfo(memberDTO.getMemberNo());
 		
 		JSONObject DTO = null;
 		JSONObject COST = null;
 		if(memberDTO !=null) {
-
+			CostDTO costDTO = getMyCostInfo(memberDTO.getMemberNo());
 			memberRT = "OK";
 			costRT = "OK";
 			DTO = new JSONObject();
@@ -184,12 +183,17 @@ public class MemberController {
 		// 기본 정보
 		String memberId = request.getParameter("memberId");
 		String pw = request.getParameter("pw");
-		pw = pwEncoder.encode(pw);
+		
 		//BCrypt.gensalt()
 		MemberDTO memberDTO = new MemberDTO();
 	    memberDTO.setMemberId(memberId);
-	    memberDTO.setPw(pw);
 	    memberDTO = memberService.memberLogin(memberDTO);
+	    
+	    String original_pw = memberDTO.getPw();
+	    if(!pwEncoder.matches(pw, original_pw)) {
+	    	memberDTO = null;
+	    	System.out.println("비밀번호 불일치로 null 처리");
+	    }
 		
 	    System.out.println("함수 종료 : getMyinfo");
 		return memberDTO;
@@ -246,7 +250,7 @@ public class MemberController {
 		String email = request.getParameter("email");
 	    String nameOfParkingArea = request.getParameter("nameOfParkingArea");
 	    String phone = request.getParameter("phone");
-
+	    pw = pwEncoder.encode(pw);
 	    //멤버 작성
 	    MemberDTO memberDTO = new MemberDTO();
 	    memberDTO.setMemberNo(memberNo);

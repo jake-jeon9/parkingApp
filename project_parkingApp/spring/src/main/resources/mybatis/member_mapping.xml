@@ -47,7 +47,7 @@
 	<!-- log in -->
 	<select id="memberlogin" parameterType="memberDTO" resultType="memberDTO" >
 		SELECT * FROM MEMBER 
-		WHERE memberId = #{memberId} AND pw = #{pw}
+		WHERE memberId = #{memberId}
 	</select>
 	
 
