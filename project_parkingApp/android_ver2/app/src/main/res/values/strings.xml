@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ParkingApp</string>
+    <string name="app_name">ParkingApp2</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_s_cost">S_costActivity</string>
