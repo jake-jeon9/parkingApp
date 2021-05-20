@@ -1,10 +1,13 @@
 package com.example.parkingapp.sign;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,51 +15,59 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.parkingapp.MainActivity;
 import com.example.parkingapp.R;
+import com.example.parkingapp.SessionManager;
 import com.example.parkingapp.helper.UrlHelper;
 import com.example.parkingapp.model.MemberDTO;
 import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.msebera.android.httpclient.Header;
+
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private boolean saveLoginData;
-    private String email;
-    private String pwd;
+    private ImageButton imageButtonGoogle,imageButtonKakao;
 
     AsyncHttpClient client;
     HttpResponse response;
-    String url = UrlHelper.getInstance().getUrl()+"/foret/search/member.do";
+    String url = UrlHelper.getInstance().getUrl()+"/parker/member/member_Login.do";
 
-    Button button0;
-    TextView button1, button2, button3, button4;
-    EditText idEditText, passwordEditText;
+    Button buttonSignIn;
+    TextView buttonSignUp, buttonFindPassword;
+    EditText editID, editPassword;
+
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        String pw1 = "sdasd221";
+        context = this;
 
-        button0 = findViewById(R.id.button0);
-        button1 = findViewById(R.id.button1);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
-        button4 = findViewById(R.id.button4);
-        idEditText = findViewById(R.id.editText1);
-        passwordEditText = findViewById(R.id.editText2);
+        buttonSignIn = findViewById(R.id.buttonSignIn);
+        buttonSignUp = findViewById(R.id.buttonSignUp);
+        buttonFindPassword = findViewById(R.id.buttonFindPassword);
+
+        imageButtonGoogle = findViewById(R.id.imageButtonGoogle);
+        imageButtonKakao = findViewById(R.id.imageButtonKakao);
+
+        editID = findViewById(R.id.editID);
+        editPassword = findViewById(R.id.editPassword);
 
         client = new AsyncHttpClient();
         response = new HttpResponse();
 
-        button0.setOnClickListener(this); //로그인
-        button1.setOnClickListener(this); //구글 로그인
-        button2.setOnClickListener(this); //카카오 로그인
-        button3.setOnClickListener(this); //비밀번호 찾기
-        button4.setOnClickListener(this); //회원가입
+        buttonSignIn.setOnClickListener(this); //로그인
 
+        buttonSignUp.setOnClickListener(this); //회원가입
+        buttonFindPassword.setOnClickListener(this); //비밀번호 찾기
 
+        imageButtonGoogle.setOnClickListener(this); //구글 로그인
+        imageButtonKakao.setOnClickListener(this); //카카오 로그인
 
     }
 
@@ -64,23 +75,23 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()) {
-            case R.id.button0 :
+            case R.id.buttonSignIn :
                 RequestParams params = new RequestParams();
-                params.put("email", emailEditText.getText().toString().trim());
-                params.put("password", passwordEditText.getText().toString().trim());
+                params.put("memberId", editID.getText().toString().trim());
+                params.put("pw", editPassword.getText().toString().trim());
                 client.post(url, params, response);
                 break;
-            case R.id.button1 :
+            case R.id.imageButtonGoogle :
                 Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.button2 :
+            case R.id.imageButtonKakao :
                 Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.button3 :
+            case R.id.buttonFindPassword :
                 Toast.makeText(this, "이름, 이메일 주소로 비밀번호 찾기", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.button4 :
-                intent = new Intent(this, JoinUsActivity.class);
+            case R.id.buttonSignUp :
+                intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -88,7 +99,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void moveToMainActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -105,8 +116,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     JSONArray member = json.getJSONArray("member");
                     JSONObject temp = member.getJSONObject(0);
                     MemberDTO memberDTO = gson.fromJson(temp.toString(), MemberDTO.class);
+
                     // 세션에 담아서 로그인 페이지로
-                    SessionManager sessionManager = new SessionManager(LoginActivity.this);
+                    SessionManager sessionManager = new SessionManager(context);
                     sessionManager.saveSession(memberDTO);
                     moveToMainActivity();
                 }
@@ -116,7 +128,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         }
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            Toast.makeText(LoginActivity.this, "이메일과 비밀번호를 확인해 주세요", Toast.LENGTH_SHORT).show();
+
         }
     }
 
