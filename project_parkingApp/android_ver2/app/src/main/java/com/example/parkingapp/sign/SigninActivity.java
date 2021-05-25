@@ -17,7 +17,10 @@ import com.example.parkingapp.MainActivity;
 import com.example.parkingapp.R;
 import com.example.parkingapp.SessionManager;
 import com.example.parkingapp.helper.UrlHelper;
+import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.MemberDTO;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -40,8 +43,15 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     Button buttonSignIn;
     TextView buttonSignUp, buttonFindPassword;
     EditText editID, editPassword;
+    int memberNo;
+
 
     Context context;
+
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    String deviceToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +78,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
         imageButtonGoogle.setOnClickListener(this); //구글 로그인
         imageButtonKakao.setOnClickListener(this); //카카오 로그인
+
+        mAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -116,6 +128,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     JSONArray member = json.getJSONArray("member");
                     JSONObject temp = member.getJSONObject(0);
                     MemberDTO memberDTO = gson.fromJson(temp.toString(), MemberDTO.class);
+                    CostDTO costDTO = gson.fromJson(temp.toString(), CostDTO.class);
 
                     // 세션에 담아서 로그인 페이지로
                     SessionManager sessionManager = new SessionManager(context);
