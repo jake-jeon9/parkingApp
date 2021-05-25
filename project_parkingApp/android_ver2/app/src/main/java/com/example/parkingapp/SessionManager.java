@@ -29,6 +29,8 @@ public class SessionManager {
         String pw = memberDTO.getPw();
         editor.putString("pw", pw).commit();
 
+        int memberNo = memberDTO.getMemberNo();
+        editor.putInt("memberNo",memberNo).commit();
     }
 
     public int getSession() {
