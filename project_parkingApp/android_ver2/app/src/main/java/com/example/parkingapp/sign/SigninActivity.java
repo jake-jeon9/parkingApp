@@ -3,6 +3,7 @@ package com.example.parkingapp.sign;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.parkingapp.MainActivity;
@@ -19,8 +21,25 @@ import com.example.parkingapp.SessionManager;
 import com.example.parkingapp.helper.UrlHelper;
 import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.MemberDTO;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -29,6 +48,9 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -45,12 +67,18 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     EditText editID, editPassword;
     int memberNo;
 
-
     Context context;
 
     FirebaseAuth mAuth;
     FirebaseUser user;
     String deviceToken;
+
+    private static final String TAG = "GoogleActivity";
+    private static final int RC_SIGN_IN = 9001;
+
+    private GoogleSignInClient mGoogleSignInClient;
+
+    boolean checker = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +107,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         imageButtonGoogle.setOnClickListener(this); //구글 로그인
         imageButtonKakao.setOnClickListener(this); //카카오 로그인
 
-        mAuth = FirebaseAuth.getInstance();
-
     }
 
     @Override
@@ -95,6 +121,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.imageButtonGoogle :
                 Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show();
+
+                startLoginWithGoogle();
                 break;
             case R.id.imageButtonKakao :
                 Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show();
@@ -110,6 +138,23 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    private void startLoginWithGoogle() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mAuth = FirebaseAuth.getInstance();
+
+        signIn();
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
     private void moveToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -123,17 +168,19 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             Gson gson = new Gson();
             try {
                 JSONObject json = new JSONObject(str);
-                String RT = json.getString("RT");
-                if(RT.equals("OK")) {
-                    JSONArray member = json.getJSONArray("member");
-                    JSONObject temp = member.getJSONObject(0);
-                    MemberDTO memberDTO = gson.fromJson(temp.toString(), MemberDTO.class);
-                    CostDTO costDTO = gson.fromJson(temp.toString(), CostDTO.class);
+                String memberRT = json.getString("memberRT");
+                String costRT = json.getString("costRT");
+                if(memberRT.equals("OK")&&costRT.equals("OK")) {
+                    JSONObject memeberDTO = json.getJSONObject("memberDTO");
+                    MemberDTO memberDTO = gson.fromJson(memeberDTO.toString(), MemberDTO.class);
 
                     // 세션에 담아서 로그인 페이지로
                     SessionManager sessionManager = new SessionManager(context);
                     sessionManager.saveSession(memberDTO);
                     moveToMainActivity();
+
+                }else{
+                    Toast.makeText(SigninActivity.this,"로그인 실패",Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -155,5 +202,75 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             moveToMainActivity();
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "Google sign in failed", e);
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(SigninActivity.this,"구글 로그인 실패.",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void updateUI(FirebaseUser user) {
+        HashMap<Object,String> hash = new HashMap<>();
+        String email = user.getEmail();
+        String uid = user.getUid();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference def = database.getReference("Users");
+        def.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(snapshot.hasChild(uid)){
+                    int memberNo = snapshot.child(uid).child("memberNo").getValue(Integer.class);
+                    RequestParams params = new RequestParams();
+                    params.put("memberNo", memberNo);
+                    client.post(url, params, response);
+
+                }else{
+                    //미등록 상태
+                    Intent intent = new Intent(context, SignUpActivity.class);
+                    intent.putExtra("email",email);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+
 
 }

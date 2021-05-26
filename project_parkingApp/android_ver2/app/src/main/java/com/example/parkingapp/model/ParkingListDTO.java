@@ -1,6 +1,8 @@
 package com.example.parkingapp.model;
 
-public class ParkingListDTO {
+import java.io.Serializable;
+
+public class ParkingListDTO implements Serializable {
     private int usedNo;
     private int memberNo;
     private String plateNumOfCar;

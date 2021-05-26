@@ -20,8 +20,8 @@ public class SessionManager {
     }
 
     public void saveSession(MemberDTO memberDTO){
-        int no = memberDTO.getMemberNo();
-        editor.putInt(SESSION_KEY, no).commit();
+        int memberNo = memberDTO.getMemberNo();
+        editor.putInt(SESSION_KEY, memberNo).commit();
 
         String memberId = memberDTO.getMemberId();
         editor.putString("memberId",memberId).commit();
@@ -29,8 +29,6 @@ public class SessionManager {
         String pw = memberDTO.getPw();
         editor.putString("pw", pw).commit();
 
-        int memberNo = memberDTO.getMemberNo();
-        editor.putInt("memberNo",memberNo).commit();
     }
 
     public int getSession() {

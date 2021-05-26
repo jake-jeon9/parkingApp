@@ -1,9 +1,10 @@
 package com.example.parkingapp.sign;
 
+import android.app.Activity;
+
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,26 +21,34 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.parkingapp.R;
-import com.example.parkingapp.SessionManager;
 import com.example.parkingapp.helper.UrlHelper;
-import com.example.parkingapp.model.MemberDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.EncryptedPrivateKeyInfo;
+
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -58,17 +67,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     Animation animation = new AlphaAnimation(0, 1);
 
     String device_token;
-
+    SignUpActivity context;
     String colorBlue = "#1e1eeb";
     String colorRed =  "#fc1414";
 
-
+    String takenEmail;
     boolean checker_id = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
+        context = this;
         findViewById();
 
         client = new AsyncHttpClient();
@@ -80,6 +89,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+        takenEmail = getIntent().getStringExtra("email");
+        if(takenEmail != null){
+            email.setText(takenEmail);
+            email.setEnabled(true);
+        }
     }
 
 
@@ -141,6 +155,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 params.put("nameOfParkingArea",nameOfParkingSpace.getText().toString().trim());
                 params.put("phone",phone.getText().toString().trim());
                 params.put("device_token",device_token);
+
+
                 client.post(url, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -148,11 +164,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                         try {
                             JSONObject json = new JSONObject(str);
-                            String RT = json.getString("RT"); // 중복확인
+                            String memberRT = json.getString("RT"); // 중복확인
+                            String costRT = json.getString("RT"); // 중복확인
 
-                            if(RT.equals("OK")){
+                            if(memberRT.equals("OK")&&costRT.equals("OK")){
+                               int memberNO = Integer.parseInt(json.getString("memberNo"));
                                Toast.makeText(SignUpActivity.this,"가입 성공! 로그인을 해주세요.",Toast.LENGTH_LONG).show();
-                                finish();
+                                if(takenEmail != null){
+                                    //유저 등록
+                                    registerUser(takenEmail,pw2.getText().toString().trim(),memberNO);
+                                }
+
                             }else{
                                 Toast.makeText(SignUpActivity.this,"가입 실패 관리자에 문의해주세요.",Toast.LENGTH_LONG).show();
                             }
@@ -182,6 +204,33 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 client.post(url, params, responseCheckMail);
                 break;
         }
+
+
+    }
+
+    private void registerUser(String takenEmail,String pw,int memberNo) {
+        Log.e("[test]", "유저등록시작");
+        FirebaseAuth mAuth;
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        // 유저 정보 얻기
+        String email = user.getEmail();
+        String uid = user.getUid();
+        SimpleDateFormat reg_date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+        // 해쉬멥에 담아서 저장
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("email", email);
+        hashMap.put("memberId",id.getText().toString().trim());
+        hashMap.put("memberNo",String.valueOf(memberNo));
+        hashMap.put("reg_date",reg_date.format(new Timestamp(System.currentTimeMillis())));
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // 파이어 베이스에 유저 등록하기
+        DatabaseReference reference = database.getReference("Users");
+        // 유저를 헤쉬맵을 통해 등록하기
+        reference.child(uid).setValue(hashMap);
 
 
     }

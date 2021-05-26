@@ -184,17 +184,25 @@ public class MemberController {
 		String memberId = request.getParameter("memberId");
 		String pw = request.getParameter("pw");
 		
-		//BCrypt.gensalt()
-		MemberDTO memberDTO = new MemberDTO();
-	    memberDTO.setMemberId(memberId);
-	    memberDTO = memberService.memberLogin(memberDTO);
-	    
-	    String original_pw = memberDTO.getPw();
-	    if(!pwEncoder.matches(pw, original_pw)) {
-	    	memberDTO = null;
-	    	System.out.println("비밀번호 불일치로 null 처리");
-	    }
+		int memberNo = convertNo(request.getParameter("memberNo"));
 		
+		MemberDTO memberDTO = new MemberDTO();
+		if(memberNo != 0) {
+			memberDTO.setMemberNo(memberNo);
+			memberDTO = memberService.memberLogin(memberDTO);
+		}else {
+			//BCrypt.gensalt()
+			
+		    memberDTO.setMemberId(memberId);
+		    memberDTO = memberService.memberLogin(memberDTO);
+		    
+		    String original_pw = memberDTO.getPw();
+		    if(!pwEncoder.matches(pw, original_pw)) {
+		    	memberDTO = null;
+		    	System.out.println("비밀번호 불일치로 null 처리");
+		    }
+		}
+
 	    System.out.println("함수 종료 : getMyinfo");
 		return memberDTO;
 	}
