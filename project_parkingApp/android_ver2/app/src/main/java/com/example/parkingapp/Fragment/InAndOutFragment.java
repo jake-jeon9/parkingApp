@@ -533,8 +533,8 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
 
                     if (calTime < costDTO.getBaseTime()) {
                         expectCost = costDTO.getBaseCost();
-                    } else if (calTime >= costDTO.getFlatTime() * 60) {
-                        expectCost = costDTO.getFlatCost();
+                    } else if (calTime >= costDTO.getMaxtime() * 60) {
+                        expectCost = costDTO.getMaxcost();
                     } else {
                         expectCost = ((calTime - costDTO.getBaseTime()) / costDTO.getAdditionalTime() * costDTO.getAdditionalCost()) + costDTO.getBaseCost();
                     }
@@ -548,12 +548,15 @@ public class InAndOutFragment extends Fragment implements View.OnClickListener, 
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for(DataSnapshot ds : snapshot.getChildren()){
                                 memberDTO = ds.getValue(MemberDTO.class);
+                               /*
                                 memberDTO.setPlateNumber(ds.getKey());
                                 //Log.d("[test]",memberDTO.getPlateNumber()+" 멤버의 레퍼런스");
                                 if (memberDTO.getPlateNumber().equals(plateOfNumber)){
                                     edprice.setText("회원차량");
                                     expectCost = 0;
                                 }
+
+                                */
                             }
                         }
 

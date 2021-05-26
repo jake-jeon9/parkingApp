@@ -95,7 +95,6 @@ public class MainFragment extends Fragment {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                 Manifest.permission.INTERNET,
-                                Manifest.permission.ACCESS_MEDIA_LOCATION,
                                 Manifest.permission.CAMERA}, 100);
             }
         }

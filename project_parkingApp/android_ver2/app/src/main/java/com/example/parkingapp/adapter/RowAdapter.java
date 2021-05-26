@@ -87,8 +87,8 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.MyViewHolder> {
         if (calTime < costDTO.getBaseTime()){
             expectCost = costDTO.getBaseCost();
             //Log.d("[test]","기본요금");
-        }else if( calTime >= costDTO.getFlatTime()*60 ){
-            expectCost = costDTO.getFlatCost();
+        }else if( calTime >= costDTO.getMaxtime()*60 ){
+            expectCost = costDTO.getMaxcost();
             //Log.d("[test]","정액요금");
         }else{
             //Log.d("[test]","일반요금");
