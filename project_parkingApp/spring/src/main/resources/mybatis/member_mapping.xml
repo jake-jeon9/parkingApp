@@ -47,10 +47,14 @@
 	<!-- log in -->
 	<select id="memberlogin" parameterType="memberDTO" resultType="memberDTO" >
 		SELECT * FROM MEMBER 
-		WHERE memberId = #{memberId}
+		<where>
+			<if test="memberNo == null">
+				WHERE memberId = #{memberId}
+			</if>
+			<if test="memberNo != null">
+				WHERE memberNo = #{memberNo}
+			</if>
+		</where>
 	</select>
-	
-
-
 	
 </mapper>

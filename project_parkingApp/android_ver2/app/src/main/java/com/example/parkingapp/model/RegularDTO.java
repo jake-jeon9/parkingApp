@@ -1,6 +1,8 @@
 package com.example.parkingapp.model;
 
-public class RegularDTO {
+import java.io.Serializable;
+
+public class RegularDTO implements Serializable {
 
     private int regularNo;
     private int memberNo;
