@@ -6,7 +6,7 @@ public class CostDTO implements Serializable {
 
     private int memberNo;
     private int additionalCost;
-    private int additionalTiem;
+    private int additionalTime;
     private int baseCost;
     private int baseTime;
     private int maxcost;
@@ -17,10 +17,10 @@ public class CostDTO implements Serializable {
     public CostDTO() {
     }
 
-    public CostDTO(int memberNo, int additionalCost, int additionalTiem, int baseCost, int baseTime, int maxcost, int maxtime, int maxArea, String reg_date) {
+    public CostDTO(int memberNo, int additionalCost, int additionalTime, int baseCost, int baseTime, int maxcost, int maxtime, int maxArea, String reg_date) {
         this.memberNo = memberNo;
         this.additionalCost = additionalCost;
-        this.additionalTiem = additionalTiem;
+        this.additionalTime = additionalTime;
         this.baseCost = baseCost;
         this.baseTime = baseTime;
         this.maxcost = maxcost;
@@ -45,12 +45,12 @@ public class CostDTO implements Serializable {
         this.additionalCost = additionalCost;
     }
 
-    public int getAdditionalTiem() {
-        return additionalTiem;
+    public int getAdditionalTime() {
+        return additionalTime;
     }
 
-    public void setAdditionalTiem(int additionalTiem) {
-        this.additionalTiem = additionalTiem;
+    public void setAdditionalTime(int additionalTime) {
+        this.additionalTime = additionalTime;
     }
 
     public int getBaseCost() {

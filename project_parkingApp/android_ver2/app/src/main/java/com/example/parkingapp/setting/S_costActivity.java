@@ -66,9 +66,8 @@ public class S_costActivity extends AppCompatActivity implements View.OnClickLis
                 editTextbasecost.setText(costDTO.getBaseCost() + "");
                 editTextAdditionalTime.setText(costDTO.getAdditionalTime() + "");
                 editTextAdditionalCost.setText(costDTO.getAdditionalCost() + "");
-                editTextFlatTime.setText(costDTO.getFlatTime() + "");
-                editTextFlatLate.setText(costDTO.getFlatCost() + "");
-                monthCost = costDTO.getMonthCost();
+                editTextFlatTime.setText(costDTO.getMaxtime() + "");
+                editTextFlatLate.setText(costDTO.getMaxcost() + "");
                 maxArea = costDTO.getMaxArea();
                 ProgressDialogHelper.getInstance().removeProgressbar();
             }
