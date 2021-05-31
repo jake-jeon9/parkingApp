@@ -46,7 +46,7 @@
             android:background="@drawable/edit_text_box"
             android:ems="10"
             android:hint="아이디"
-            android:inputType="textEmailAddress"
+            android:inputType="textPersonName"
             android:padding="5dp"
             android:textColor="#000000"
             android:textColorHint="#717171" />

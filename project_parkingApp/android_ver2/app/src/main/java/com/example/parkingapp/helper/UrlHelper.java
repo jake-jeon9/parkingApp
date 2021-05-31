@@ -3,7 +3,7 @@ package com.example.parkingapp.helper;
 public class UrlHelper {
 
     private static UrlHelper instance =null;
-    String url = "http://192.168.55.172:8081";
+    String url = "http://192.168.219.102:8081";
 
     public static UrlHelper getInstance(){
         if(instance == null){
