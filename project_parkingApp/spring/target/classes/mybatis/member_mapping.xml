@@ -49,10 +49,10 @@
 		SELECT * FROM MEMBER 
 		<where>
 			<if test="memberNo == null">
-				WHERE memberId = #{memberId}
+				memberId = #{memberId}
 			</if>
 			<if test="memberNo != null">
-				WHERE memberNo = #{memberNo}
+				memberNo = #{memberNo}
 			</if>
 		</where>
 	</select>

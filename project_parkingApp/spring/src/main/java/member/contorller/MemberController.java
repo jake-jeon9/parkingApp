@@ -188,19 +188,25 @@ public class MemberController {
 		
 		MemberDTO memberDTO = new MemberDTO();
 		if(memberNo != 0) {
+			System.out.println("구글아이디 로그인");
 			memberDTO.setMemberNo(memberNo);
 			memberDTO = memberService.memberLogin(memberDTO);
 		}else {
 			//BCrypt.gensalt()
-			
 		    memberDTO.setMemberId(memberId);
 		    memberDTO = memberService.memberLogin(memberDTO);
 		    
+		    if(memberDTO == null) {
+		    	System.out.println("회원정보 없음");
+		    	return null;
+		    }
 		    String original_pw = memberDTO.getPw();
+		    
 		    if(!pwEncoder.matches(pw, original_pw)) {
 		    	memberDTO = null;
 		    	System.out.println("비밀번호 불일치로 null 처리");
-		    }
+		    }	
+
 		}
 
 	    System.out.println("함수 종료 : getMyinfo");
@@ -236,8 +242,13 @@ public class MemberController {
 	    memberDTO.setNameOfParkingArea(nameOfParkingArea);
 	    memberDTO.setPhone(phone);
 	    memberDTO.setDevice_token(device_token);
+	    try {
+	    	memberService.memberInsert(memberDTO);	
+	    }catch (Exception e) {
+	    	System.out.println("이미 회원가입된 멤버");
+	    	return 0;
+		}
 	    
-	    memberService.memberInsert(memberDTO);
 	    int result = memberDTO.getMemberNo();
 		return result;
 	}

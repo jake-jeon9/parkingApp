@@ -12,12 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.parkingapp.MainActivity;
 import com.example.parkingapp.R;
 import com.example.parkingapp.SessionManager;
+import com.example.parkingapp.helper.ProgressDialogHelper;
 import com.example.parkingapp.helper.UrlHelper;
 import com.example.parkingapp.model.CostDTO;
 import com.example.parkingapp.model.MemberDTO;
@@ -75,15 +78,19 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
+    private static final String T = "[text]";
 
     private GoogleSignInClient mGoogleSignInClient;
 
     boolean checker = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+
+
         context = this;
 
         buttonSignIn = findViewById(R.id.buttonSignIn);
@@ -107,6 +114,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         imageButtonGoogle.setOnClickListener(this); //구글 로그인
         imageButtonKakao.setOnClickListener(this); //카카오 로그인
 
+
     }
 
     @Override
@@ -117,11 +125,12 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 RequestParams params = new RequestParams();
                 params.put("memberId", editID.getText().toString().trim());
                 params.put("pw", editPassword.getText().toString().trim());
+                ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요.");
                 client.post(url, params, response);
                 break;
             case R.id.imageButtonGoogle :
                 Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show();
-
+                ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요");
                 startLoginWithGoogle();
                 break;
             case R.id.imageButtonKakao :
@@ -133,7 +142,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.buttonSignUp :
                 intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
-                finish();
                 break;
         }
     }
@@ -152,6 +160,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Log.d(T,"sign In ");
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -177,18 +186,22 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     // 세션에 담아서 로그인 페이지로
                     SessionManager sessionManager = new SessionManager(context);
                     sessionManager.saveSession(memberDTO);
+                    ProgressDialogHelper.getInstance().removeProgressbar();
                     moveToMainActivity();
 
                 }else{
-                    Toast.makeText(SigninActivity.this,"로그인 실패",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SigninActivity.this,"아이디 혹은 비밀번호를 확인주세요.",Toast.LENGTH_SHORT).show();
+                    ProgressDialogHelper.getInstance().removeProgressbar();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                ProgressDialogHelper.getInstance().removeProgressbar();
             }
         }
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+            ProgressDialogHelper.getInstance().removeProgressbar();
+            Log.d("[test]",error.getMessage());
         }
     }
 
@@ -205,32 +218,33 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d(T,"Result in ");
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                Log.d(T, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Google sign in failed", e);
+                Log.w(T, "Google sign in failed", e);
             }
         }
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        Log.d(T,"Auth with google in");
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.d(T, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.w(T, "signInWithCredential:failure", task.getException());
                             Toast.makeText(SigninActivity.this,"구글 로그인 실패.",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -238,36 +252,48 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void updateUI(FirebaseUser user) {
-        HashMap<Object,String> hash = new HashMap<>();
+        Log.d(T,"udate UI in ");
+        HashMap<String,Object> hash = new HashMap<>();
         String email = user.getEmail();
         String uid = user.getUid();
+        Log.e(T,"email : " + email);
+        Log.e(T,"uid : " + uid);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference def = database.getReference("Users");
-        def.addValueEventListener(new ValueEventListener() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        Log.e(T,ref.getRef().toString());
+        ref.setValue(hash);
+        //ref.setValue(hash);
+        Log.e(T,"푸쉬함");
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                if(snapshot.hasChild(uid)){
-                    int memberNo = snapshot.child(uid).child("memberNo").getValue(Integer.class);
-                    RequestParams params = new RequestParams();
-                    params.put("memberNo", memberNo);
-                    client.post(url, params, response);
-
-                }else{
-                    //미등록 상태
-                    Intent intent = new Intent(context, SignUpActivity.class);
-                    intent.putExtra("email",email);
-                    startActivity(intent);
+                
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if(ds.child("email").exists()){
+                        Log.d(T,"realtime data goTO main try ");
+                        int memberNo = snapshot.child(uid).child("memberNo").getValue(Integer.class);
+                        RequestParams params = new RequestParams();
+                        params.put("memberNo", memberNo);
+                        client.post(url, params, response);
+                        break;
+                    }
                 }
+                Log.d(T,"realtime data goTO sign up ");
+                //미등록 상태
+
+                Intent intent = new Intent(context, SignUpActivity.class);
+                intent.putExtra("email",email);
+                startActivity(intent);
+                ProgressDialogHelper.getInstance().removeProgressbar();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(T,"error ? " + error.getMessage());
+                ProgressDialogHelper.getInstance().removeProgressbar();
             }
         });
-
+        Log.e(T,"푸쉬 끝남");
 
     }
 
