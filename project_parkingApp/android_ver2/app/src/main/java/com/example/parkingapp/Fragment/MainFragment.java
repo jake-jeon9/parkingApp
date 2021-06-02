@@ -19,25 +19,40 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.parkingapp.MainActivity;
 import com.example.parkingapp.R;
 import com.example.parkingapp.adapter.Adapter;
 import com.example.parkingapp.helper.CalendarHelper;
 import com.example.parkingapp.helper.ConvertDateHelper;
 import com.example.parkingapp.helper.DateTimeHelper;
 import com.example.parkingapp.helper.ProgressDialogHelper;
+import com.example.parkingapp.helper.UrlHelper;
 import com.example.parkingapp.model.DailyData;
 import com.example.parkingapp.model.CostDTO;
+import com.example.parkingapp.model.MemberDTO;
 import com.example.parkingapp.model.ParkedDTO;
+import com.example.parkingapp.model.ParkingListDTO;
+import com.example.parkingapp.model.PhotoDTO;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpResponse;
 
 public class MainFragment extends Fragment {
     TextView date, availableLot, usedLot, totalLot, textViewAccount,textViewCount,textViewNoList;
@@ -46,7 +61,7 @@ public class MainFragment extends Fragment {
     Context context;
     Activity activity;
     Adapter adapter;
-
+    final String TAG = "[MainFragMentTag]";
 
     //파이어베이스
     String today;
@@ -54,7 +69,14 @@ public class MainFragment extends Fragment {
     List<ParkedDTO> parkedList;
     int YEAR, MONTH, DAY;
 
+    String url = UrlHelper.getInstance().getUrl()+"/parker/parkinglist/parkinglist_searchTodayitems.do";
 
+    AsyncHttpClient client;
+    HttpResponse response;
+
+    ArrayList<ParkingListDTO> parkingListDTO;
+    MemberDTO memberDTO;
+    CostDTO costDTO;
     public MainFragment() {
     }
 
@@ -79,7 +101,11 @@ public class MainFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(linearLayoutManager1);
+        memberDTO = MainActivity.memberDTO;
+        costDTO;
 
+        client = new AsyncHttpClient();
+        response = new HttpResponse();
         return rootView;
     }
 
@@ -253,5 +279,34 @@ public class MainFragment extends Fragment {
 
 
 
+    }
+    class HttpResponse extends AsyncHttpResponseHandler {
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            String str = new String(responseBody);
+            Gson gson = new Gson();
+            try {
+                JSONObject json = new JSONObject(str);
+                String RT = json.getString("RT");
+                int size = Integer.parseInt(json.getString("size"));
+                JSONArray parkingList = json.getJSONArray("parkingList");
+                parkingListDTO = new ArrayList<>();
+                if (RT.equals("OK")&&size >0 ) {
+
+                }else{
+                    Toast.makeText(MainFragment.this,"불러오기 실패..잠시후 다시 시도해주세요.",Toast.LENGTH_LONG).show();
+                }
+                    ProgressDialogHelper.getInstance().removeProgressbar();
+            }catch (JSONException e) {
+                e.printStackTrace();
+                ProgressDialogHelper.getInstance().removeProgressbar();
+            }
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                ProgressDialogHelper.getInstance().removeProgressbar();
+        }
     }
 }
