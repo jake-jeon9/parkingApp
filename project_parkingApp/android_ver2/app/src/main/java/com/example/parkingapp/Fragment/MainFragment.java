@@ -102,7 +102,7 @@ public class MainFragment extends Fragment {
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(linearLayoutManager1);
         memberDTO = MainActivity.memberDTO;
-        costDTO;
+        costDTO = MainActivity.costDTO;
 
         client = new AsyncHttpClient();
         response = new HttpResponse();
@@ -295,7 +295,7 @@ public class MainFragment extends Fragment {
                 if (RT.equals("OK")&&size >0 ) {
 
                 }else{
-                    Toast.makeText(MainFragment.this,"불러오기 실패..잠시후 다시 시도해주세요.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"불러오기 실패..잠시후 다시 시도해주세요.",Toast.LENGTH_LONG).show();
                 }
                     ProgressDialogHelper.getInstance().removeProgressbar();
             }catch (JSONException e) {

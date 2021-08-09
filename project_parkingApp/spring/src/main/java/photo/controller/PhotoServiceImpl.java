@@ -1,5 +1,6 @@
 package photo.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +8,7 @@ import photo.bean.PhotoDTO;
 import photo.dao.PhotoDAO;
 
 @Service
-public class PhotoServiceImpl implements PhotoService{
+public class PhotoServiceImpl implements photo.controller.PhotoService{
 
 	@Autowired
 	PhotoDAO photoDAO;
@@ -26,8 +27,7 @@ public class PhotoServiceImpl implements PhotoService{
 	public PhotoDTO photoSelect(String type, Object item) {
 		return photoDAO.photoSelect(type, item);
 	}
-
-	
+		
 //	@Override
 //	public PhotoDTO photoSelectByPlateNum(String plateNum) {
 //		return photoDAO.photoSelectByPlateNum(plateNum);
