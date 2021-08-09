@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     SetFragment setFragment;
 
     Context context;
-    static MemberDTO memberDTO;
-    static CostDTO costDTO;
+    public static MemberDTO memberDTO;
+    public static CostDTO costDTO;
 
     String url = UrlHelper.getInstance().getUrl()+"/parker/member/member_Login.do";
 

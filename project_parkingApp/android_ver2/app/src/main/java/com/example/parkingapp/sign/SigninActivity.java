@@ -114,7 +114,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         imageButtonGoogle.setOnClickListener(this); //구글 로그인
         imageButtonKakao.setOnClickListener(this); //카카오 로그인
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -130,11 +136,11 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.imageButtonGoogle :
                 Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show();
-                ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요");
+                //ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요");
                 startLoginWithGoogle();
                 break;
             case R.id.imageButtonKakao :
-                Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "페이스북 로그인", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonFindPassword :
                 Toast.makeText(this, "이름, 이메일 주소로 비밀번호 찾기", Toast.LENGTH_SHORT).show();
@@ -147,23 +153,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void startLoginWithGoogle() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        mAuth = FirebaseAuth.getInstance();
-
-        signIn();
-    }
-
-    private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         Log.d(T,"sign In ");
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
     private void moveToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -214,7 +207,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         if(userID != -1) {
             moveToMainActivity();
         }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -222,12 +218,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                Log.e(T,"try");
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d(T, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show();
-                Log.w(T, "Google sign in failed", e);
+                Log.w(T, "Google sign in failed : "+e.getMessage());
             }
         }
     }
@@ -261,29 +258,32 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
         Log.e(T,ref.getRef().toString());
-        ref.setValue(hash);
+        //ref.setValue(hash);
         //ref.setValue(hash);
         Log.e(T,"푸쉬함");
-        ref.addValueEventListener(new ValueEventListener() {
+        /*ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                
+                boolean isChecked = false;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     if(ds.child("email").exists()){
                         Log.d(T,"realtime data goTO main try ");
                         int memberNo = snapshot.child(uid).child("memberNo").getValue(Integer.class);
                         RequestParams params = new RequestParams();
                         params.put("memberNo", memberNo);
+                        isChecked = true;
                         client.post(url, params, response);
                         break;
                     }
                 }
                 Log.d(T,"realtime data goTO sign up ");
                 //미등록 상태
+                if(isChecked){
+                    Intent intent = new Intent(context, SignUpActivity.class);
+                    intent.putExtra("email",email);
+                    startActivity(intent);
+                }
 
-                Intent intent = new Intent(context, SignUpActivity.class);
-                intent.putExtra("email",email);
-                startActivity(intent);
                 ProgressDialogHelper.getInstance().removeProgressbar();
             }
 
@@ -293,10 +293,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 ProgressDialogHelper.getInstance().removeProgressbar();
             }
         });
+        */
+
         Log.e(T,"푸쉬 끝남");
 
     }
-
-
-
 }

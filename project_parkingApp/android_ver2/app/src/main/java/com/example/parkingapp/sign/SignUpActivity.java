@@ -32,7 +32,10 @@ import com.example.parkingapp.helper.ProgressDialogHelper;
 import com.example.parkingapp.helper.UrlHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -82,6 +85,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     String takenEmail;
     boolean checker_id = false;
     boolean toggleSeePw = false;
+    RequestParams params = null;
+
+    int memberNO = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,7 +256,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        RequestParams params = null;
+
         switch (v.getId()){
             case R.id.button1 :  //x버튼
                 Toast.makeText(this,"X눌림",Toast.LENGTH_SHORT).show();
@@ -258,59 +264,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.button2 : // 회원가입
                 //Toast.makeText(this,"회원가입 눌림",Toast.LENGTH_SHORT).show();
-
                 if(!checkForm()) return; // 빈항목 있으면 멈춤.
+                join();
 
-                url=UrlHelper.getInstance().getUrl()+"/parker/member/member_insert.do";
-                params =  new RequestParams();
-                params.put("memberId",id.getText().toString().trim());
-                params.put("pw", pw1.getText().toString().trim());
-                params.put("email",email.getText().toString().trim());
-                params.put("nameOfParkingArea",nameOfParkingSpace.getText().toString().trim());
-                params.put("phone",phone.getText().toString().trim());
-                params.put("device_token",device_token);
-                ProgressDialogHelper.getInstance().getProgressbar(this,"회원가입 중입니다.");
-
-                client.post(url, params, new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        String str = new String(responseBody);
-
-                        try {
-                            JSONObject json = new JSONObject(str);
-                            String memberRT = json.getString("memberRT"); // 중복확인
-                            String costRT = json.getString("costRT"); // 중복확인
-
-                            if(memberRT.equals("OK")&&costRT.equals("OK")){
-                               int memberNO = Integer.parseInt(json.getString("memberNo"));
-                               Toast.makeText(SignUpActivity.this,"가입 성공! 로그인을 해주세요.",Toast.LENGTH_LONG).show();
-                                finish();
-                                if(takenEmail != null){
-                                    //유저 등록
-                                    registerUser(takenEmail,pw2.getText().toString().trim(),memberNO);
-                                }
-
-                            }else{
-                                if(json.getString("memberNo").equals("0")){
-                                    Toast.makeText(SignUpActivity.this,"이미 사용중인 아이디 입니다.\n 다른 아이디를 사용해주세요.",Toast.LENGTH_LONG).show();
-                                }else{
-                                    Toast.makeText(SignUpActivity.this,"가입 실패 관리자에 문의해주세요.",Toast.LENGTH_LONG).show();
-                                }
-
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                        Toast.makeText(SignUpActivity.this,statusCode+" error : "+error.getMessage(),Toast.LENGTH_LONG).show();
-                    }
-                });
-                ProgressDialogHelper.getInstance().removeProgressbar();
                 break;
 
             case R.id.button3 : // 중복확인
@@ -348,16 +304,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void registerUser(String takenEmail,String pw,int memberNo) {
+    private void registerUser(String takenEmail,int memberNo) {
+
         Log.e("[test]", "유저등록시작");
         FirebaseAuth mAuth;
-
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         // 유저 정보 얻기
-        String email = user.getEmail();
+        String email = takenEmail;
         String uid = user.getUid();
         SimpleDateFormat reg_date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+
+        Log.e("[test]", "전달받은 데이터 email ? "+takenEmail);
+        Log.e("[test]", "전달받은 id ? "+memberNo);
+        Log.e("[test]", "생성한 uid? ? "+uid);
+
 
         // 해쉬멥에 담아서 저장
         HashMap<Object, String> hashMap = new HashMap<>();
@@ -366,12 +328,24 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         hashMap.put("memberNo",String.valueOf(memberNo));
         hashMap.put("reg_date",reg_date.format(new Timestamp(System.currentTimeMillis())));
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        // 파이어 베이스에 유저 등록하기
-        DatabaseReference reference = database.getReference("Users");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Log.e("ref?",reference.toString());
         // 유저를 헤쉬맵을 통해 등록하기
-        reference.child(uid).setValue(hashMap);
-        finish();
+        reference.child("Users").child(uid).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.e("[test]","데이터 쓰기 성공");
+                //finish();
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("[test]","데이터 쓰기 성공") ;
+            }
+        });
+
 
     }
 
@@ -473,6 +447,61 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
+    public void join(){
+
+        url=UrlHelper.getInstance().getUrl()+"/parker/member/member_insert.do";
+        params =  new RequestParams();
+        params.put("memberId",id.getText().toString().trim());
+        params.put("pw", pw1.getText().toString().trim());
+        params.put("email",email.getText().toString().trim());
+        params.put("nameOfParkingArea",nameOfParkingSpace.getText().toString().trim());
+        params.put("phone",phone.getText().toString().trim());
+        params.put("device_token",device_token);
+
+        ProgressDialogHelper.getInstance().getProgressbar(this,"회원가입 중입니다.");
+
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String str = new String(responseBody);
+
+                try {
+                    JSONObject json = new JSONObject(str);
+                    String memberRT = json.getString("memberRT"); // 중복확인
+                    String costRT = json.getString("costRT"); // 중복확인
+
+                    if(memberRT.equals("OK")&&costRT.equals("OK")){
+                        memberNO = Integer.parseInt(json.getString("memberNo"));
+                        Toast.makeText(SignUpActivity.this,"가입 성공! 로그인을 해주세요.",Toast.LENGTH_LONG).show();
+                        if(memberNO>0){
+                            Log.e("----[][]----","회원번호 ?" +memberNO);
+                            //유저 등록
+                            registerUser(takenEmail,memberNO);
+                        }
+                    }else{
+                        if(json.getString("memberNo").equals("0")){
+                            Toast.makeText(SignUpActivity.this,"이미 사용중인 아이디 입니다.\n 다른 아이디를 사용해주세요.",Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(SignUpActivity.this,"가입 실패 관리자에 문의해주세요.",Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(SignUpActivity.this,statusCode+" error : "+error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
+    //아이디 중복확인
     class HttpResponse extends AsyncHttpResponseHandler {
         @Override
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
