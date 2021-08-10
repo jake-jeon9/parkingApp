@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     Context context;
     public static MemberDTO memberDTO;
     public static CostDTO costDTO;
-
+    int memberNo;
     String url = UrlHelper.getInstance().getUrl()+"/parker/member/member_Login.do";
 
     AsyncHttpClient client;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         context = this;
         mainFragment = new MainFragment(context);
         inAndOutFragment = new InAndOutFragment(context);
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         nav_bottom.setOnNavigationItemSelectedListener(this);
         client = new AsyncHttpClient();
         response = new HttpResponse();
-
+        memberNo = getIntent().getIntExtra("memberNo",memberNo);
 
 
         if (savedInstanceState == null) {
@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         if(costDTO == null | memberDTO==null){
             RequestParams params = new RequestParams();
-            SessionManager sessionManager = new SessionManager(this);
-            String memberNo = sessionManager.getSessionMemberNo();
             params.put("memberNo", memberNo);
             ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요.");
             client.post(url, params, response);
@@ -128,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                     JSONObject costDTO1 = json.getJSONObject("costDTO");
                     costDTO = gson.fromJson(costDTO1.toString(), CostDTO.class);
-
                     ProgressDialogHelper.getInstance().removeProgressbar();
+
 
                 } else {
                     Toast.makeText(MainActivity.this, "아이디 혹은 비밀번호를 확인주세요.", Toast.LENGTH_SHORT).show();

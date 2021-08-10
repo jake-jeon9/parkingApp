@@ -178,7 +178,7 @@ public class ParkinglistController {
 		
 		List<ParkinglistDTO> list = parkinglistService.getTodayAll(memberNo, targetState, coupon,startNum,endNum);
 		JSONObject json = new JSONObject();
-		
+		//System.out.printf("size? %d id? %d \n",list.size(),memberNo);
 		if(list != null) {
 			RT = "OK";
 			JSONArray parkingList = new JSONArray();

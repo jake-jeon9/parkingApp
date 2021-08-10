@@ -137,10 +137,14 @@ public class MainFragment extends Fragment {
         MONTH = date2[1];
         DAY = date2[2];
         date.setText(String.format("%04d-%02d-%02d", YEAR, MONTH, DAY));
-        ProgressDialogHelper.getInstance().getProgressbar(context, "잠시만 기다려주세요");
-        getChatData();
+        //ProgressDialogHelper.getInstance().getProgressbar(context, "잠시만 기다려주세요");
+
         getPermission();
-        updateDate();
+
+        //getChatData();
+        //updateDate();
+
+
 
     }
 
@@ -280,6 +284,8 @@ public class MainFragment extends Fragment {
 
 
     }
+
+
     class HttpResponse extends AsyncHttpResponseHandler {
 
         @Override

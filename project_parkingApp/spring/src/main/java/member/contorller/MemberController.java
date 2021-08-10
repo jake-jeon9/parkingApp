@@ -198,6 +198,7 @@ public class MemberController {
 		    
 		    if(memberDTO == null) {
 		    	System.out.println("회원정보 없음");
+		    	System.out.println("함수 종료 : getMyinfo");
 		    	return null;
 		    }
 		    String original_pw = memberDTO.getPw();

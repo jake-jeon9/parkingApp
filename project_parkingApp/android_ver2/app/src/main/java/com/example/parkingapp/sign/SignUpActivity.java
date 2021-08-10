@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.parkingapp.R;
 import com.example.parkingapp.helper.ProgressDialogHelper;
@@ -34,9 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -49,15 +46,11 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.crypto.EncryptedPrivateKeyInfo;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -266,9 +259,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 //Toast.makeText(this,"회원가입 눌림",Toast.LENGTH_SHORT).show();
                 if(!checkForm()) return; // 빈항목 있으면 멈춤.
                 join();
-
                 break;
-
             case R.id.button3 : // 중복확인
                 //Toast.makeText(this,"중복확인 눌림",Toast.LENGTH_SHORT).show();
                 textViewId.setVisibility(View.INVISIBLE);
@@ -335,14 +326,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         reference.child("Users").child(uid).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.e("[test]","데이터 쓰기 성공");
-                //finish();
+                Log.e("[test]","등록성공");
+                finish();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("[test]","데이터 쓰기 성공") ;
+                Log.e("[test]","등록실패") ;
             }
         });
 

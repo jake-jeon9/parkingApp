@@ -75,6 +75,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseAuth mAuth;
     FirebaseUser user;
     String deviceToken;
+    DatabaseReference ref;
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -136,7 +137,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.imageButtonGoogle :
                 Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show();
-                //ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요");
+                ProgressDialogHelper.getInstance().getProgressbar(this,"잠시만 기다려주세요");
                 startLoginWithGoogle();
                 break;
             case R.id.imageButtonKakao :
@@ -157,57 +158,23 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         Log.d(T,"sign In ");
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    private void moveToMainActivity() {
+    private void moveToMainActivity(int memberNo) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("memberNo",memberNo);
         startActivity(intent);
         finish();
-    }
-
-    class HttpResponse extends AsyncHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            String str = new String(responseBody);
-            Gson gson = new Gson();
-            try {
-                JSONObject json = new JSONObject(str);
-                String memberRT = json.getString("memberRT");
-                String costRT = json.getString("costRT");
-                if(memberRT.equals("OK")&&costRT.equals("OK")) {
-                    JSONObject memeberDTO = json.getJSONObject("memberDTO");
-                    MemberDTO memberDTO = gson.fromJson(memeberDTO.toString(), MemberDTO.class);
-
-                    // 세션에 담아서 로그인 페이지로
-                    SessionManager sessionManager = new SessionManager(context);
-                    sessionManager.saveSession(memberDTO);
-                    ProgressDialogHelper.getInstance().removeProgressbar();
-                    moveToMainActivity();
-
-                }else{
-                    Toast.makeText(SigninActivity.this,"아이디 혹은 비밀번호를 확인주세요.",Toast.LENGTH_SHORT).show();
-                    ProgressDialogHelper.getInstance().removeProgressbar();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                ProgressDialogHelper.getInstance().removeProgressbar();
-            }
-        }
-        @Override
-        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            ProgressDialogHelper.getInstance().removeProgressbar();
-            Log.d("[test]",error.getMessage());
-        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         SessionManager sessionManager = new SessionManager(this);
-        int userID = sessionManager.getSession();
+        int memberNo = sessionManager.getSession();
 
-        if(userID != -1) {
-            moveToMainActivity();
+        if(memberNo != -1) {
+            moveToMainActivity(memberNo);
         }
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
     }
 
@@ -225,6 +192,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             } catch (ApiException e) {
                 Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show();
                 Log.w(T, "Google sign in failed : "+e.getMessage());
+                ProgressDialogHelper.getInstance().removeProgressbar();
             }
         }
     }
@@ -243,6 +211,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         } else {
                             Log.w(T, "signInWithCredential:failure", task.getException());
                             Toast.makeText(SigninActivity.this,"구글 로그인 실패.",Toast.LENGTH_SHORT).show();
+                            ProgressDialogHelper.getInstance().removeProgressbar();
                         }
                     }
                 });
@@ -250,52 +219,75 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void updateUI(FirebaseUser user) {
         Log.d(T,"udate UI in ");
-        HashMap<String,Object> hash = new HashMap<>();
         String email = user.getEmail();
         String uid = user.getUid();
         Log.e(T,"email : " + email);
         Log.e(T,"uid : " + uid);
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
-        Log.e(T,ref.getRef().toString());
-        //ref.setValue(hash);
-        //ref.setValue(hash);
-        Log.e(T,"푸쉬함");
-        /*ref.addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").child(uid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
                 boolean isChecked = false;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    if(ds.child("email").exists()){
-                        Log.d(T,"realtime data goTO main try ");
-                        int memberNo = snapshot.child(uid).child("memberNo").getValue(Integer.class);
-                        RequestParams params = new RequestParams();
-                        params.put("memberNo", memberNo);
-                        isChecked = true;
-                        client.post(url, params, response);
-                        break;
-                    }
-                }
-                Log.d(T,"realtime data goTO sign up ");
-                //미등록 상태
-                if(isChecked){
+                if(task.isSuccessful()){
+                    //isChecked = true;
+                    memberNo = Integer.parseInt(task.getResult().child("memberNo").getValue(String.class));
+                    Log.e(T,"no ?"+memberNo);
+                    RequestParams params = new RequestParams();
+                    params.put("memberNo", memberNo);
+                    client.post(url, params, response);
+                }else{
+                    Toast.makeText(context,"오류",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, SignUpActivity.class);
                     intent.putExtra("email",email);
                     startActivity(intent);
                 }
-
+                //Log.e(T,task.getResult().getRef().toString());
                 ProgressDialogHelper.getInstance().removeProgressbar();
-            }
+                if(isChecked){
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(T,"error ? " + error.getMessage());
-                ProgressDialogHelper.getInstance().removeProgressbar();
+                }else{
+                    //미등록상태
+
+                }
             }
         });
-        */
-
-        Log.e(T,"푸쉬 끝남");
 
     }
+
+
+    class HttpResponse extends AsyncHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            String str = new String(responseBody);
+            Gson gson = new Gson();
+            try {
+                JSONObject json = new JSONObject(str);
+                String memberRT = json.getString("memberRT");
+                String costRT = json.getString("costRT");
+                if(memberRT.equals("OK")&&costRT.equals("OK")) {
+                    JSONObject memeberDTO = json.getJSONObject("memberDTO");
+                    MemberDTO memberDTO = gson.fromJson(memeberDTO.toString(), MemberDTO.class);
+
+                    // 세션에 담아서 로그인 페이지로
+                    SessionManager sessionManager = new SessionManager(context);
+                    sessionManager.saveSession(memberDTO);
+                    ProgressDialogHelper.getInstance().removeProgressbar();
+                    moveToMainActivity(memberDTO.getMemberNo());
+
+                }else{
+                    Toast.makeText(SigninActivity.this,"아이디 혹은 비밀번호를 확인주세요.",Toast.LENGTH_SHORT).show();
+                    ProgressDialogHelper.getInstance().removeProgressbar();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                ProgressDialogHelper.getInstance().removeProgressbar();
+            }
+        }
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            ProgressDialogHelper.getInstance().removeProgressbar();
+            Log.d("[test]",error.getMessage());
+        }
+    }
+
 }
